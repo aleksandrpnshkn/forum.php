@@ -1,0 +1,22 @@
+{
+    "name": "aleksandr/forum.php",
+    "type": "project",
+    "authors": [
+        {
+            "name": "aleksandr",
+            "email": "aleksandrkrzhn@yandex.ru"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Src\\": "src/",
+            "Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "8.*",
+        "phpunit/phpunit": "^9.5",
+        "ext-mbstring": "*",
+        "ext-pdo": "*"
+    }
+}
