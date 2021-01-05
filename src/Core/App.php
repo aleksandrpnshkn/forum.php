@@ -12,6 +12,7 @@ final class App
     public string $tablesPath;
     public string $rollbackPath;
 
+    public Auth $auth;
     private UserRepository $userRepository;
 
     public function __construct()
@@ -20,6 +21,7 @@ final class App
         $this->tablesPath = realpath(__DIR__ . '/../../database/migrate.sql');
         $this->rollbackPath = realpath(__DIR__ . '/../../database/rollback.sql');
 
+        $this->auth = new Auth($this->getUserRepository());
     }
 
     public function getUserRepository() : UserRepository
