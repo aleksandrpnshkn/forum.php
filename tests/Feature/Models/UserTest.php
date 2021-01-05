@@ -9,6 +9,17 @@ use Tests\Feature\FeatureTestCase;
 
 class UserTest extends FeatureTestCase
 {
+    public function testValidate()
+    {
+        $user = new User();
+        $user->username = 'WRONG ;';
+        $this->assertFalse($user->validate());
+        $this->assertTrue($user->hasValidationErrors());
+        $this->assertTrue($user->validator->errorsBag->has('username'));
+        $this->assertTrue($user->validator->errorsBag->has('email'));
+        $this->assertTrue($user->validator->errorsBag->has('password'));
+    }
+
     #[Pure] public static function makeUser() : User
     {
         $user = new User();

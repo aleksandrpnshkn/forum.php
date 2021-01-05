@@ -17,10 +17,32 @@ class UserRepository
         $this->db = $db;
     }
 
-    public function getById(int $id) : User|false
+    public function getById(int $id) : ?User
     {
-        $stmt = $this->db->dbh->prepare('SELECT * FROM users WHERE id = :id');
-        $stmt->execute([':id' => $id]);
+        return $this->getBy('id', $id);
+    }
+
+    public function getByUsername(string $username) : ?User
+    {
+        return $this->getBy('username', $username);
+    }
+
+    public function getByEmail(string $email) : ?User
+    {
+        return $this->getBy('email', $email);
+    }
+
+    /**
+     * Only $value can be provided by user!
+     */
+    private function getBy(string $name, mixed $value) : ?User
+    {
+        if (! preg_match('/^[a-z_]+$/', $name)) {
+            throw new \InvalidArgumentException('Column name contains bad chars');
+        }
+
+        $stmt = $this->db->dbh->prepare("SELECT * FROM users WHERE $name = :$name");
+        $stmt->execute([":$name" => $value]);
         $userData = $stmt->fetch();
 
         if (! $userData) {
@@ -30,6 +52,7 @@ class UserRepository
         $user = new User();
         $user->id = $userData['id'] ? (int)$userData['id'] : null;
         $user->username = $userData['username'];
+        $user->email = $userData['email'];
         $user->password = $userData['password'];
         $user->avatar_path = $userData['avatar_path'];
         $user->created_at = $userData['created_at']
@@ -50,11 +73,12 @@ class UserRepository
         try {
             $this->db->dbh
                 ->prepare('
-                    INSERT INTO users (username, password, avatar_path)
-                    VALUES (:username, :password, :avatar_path);
+                    INSERT INTO users (username, email, password, avatar_path)
+                    VALUES (:username, :email, :password, :avatar_path);
                 ')
                 ->execute([
                     ':username' => $user->username,
+                    ':email' => $user->email,
                     ':password' => $user->password,
                     ':avatar_path' => $user->avatar_path,
                 ]);
@@ -76,6 +100,7 @@ class UserRepository
                     UPDATE users
                     SET
                         username = :username,
+                        email = :email,
                         password = :password,
                         avatar_path = :avatar_path,
                         updated_at = :updated_at,
@@ -85,6 +110,7 @@ class UserRepository
                 ->execute([
                     ':id' => $user->id,
                     ':username' => $user->username,
+                    ':email' => $user->email,
                     ':password' => $user->password,
                     ':avatar_path' => $user->avatar_path,
                     ':updated_at' => (new DateTime())->format('Y-m-d H:i:s'),

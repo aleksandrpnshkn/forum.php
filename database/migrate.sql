@@ -1,6 +1,7 @@
 CREATE TABLE users (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
     password VARCHAR(255) NOT NULL, # for bcrypt 60 would be enough, but default php algorithm can change in future
     avatar_path VARCHAR(255),
     messages_count INT UNSIGNED NOT NULL DEFAULT 0, # counting every time amount of messages is heavy task
@@ -10,7 +11,8 @@ CREATE TABLE users (
     deleted_at TIMESTAMP,
 
     PRIMARY KEY (id),
-    UNIQUE KEY (username)
+    UNIQUE KEY (username),
+    UNIQUE KEY (email)
 );
 
 CREATE TABLE boards (

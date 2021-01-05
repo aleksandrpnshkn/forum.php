@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Src\Core;
 
+use Src\Models\User;
 use Src\Repositories\UserRepository;
 
 final class App
@@ -22,6 +23,9 @@ final class App
         $this->db = new Database();
         $this->tablesPath = realpath(__DIR__ . '/../../database/migrate.sql');
         $this->rollbackPath = realpath(__DIR__ . '/../../database/rollback.sql');
+
+        // I don't want to pass everytime App or UserRepository to User constructor
+        User::$userRepository = $this->getUserRepository();
 
         $this->auth = new Auth($this->getUserRepository());
         $this->view = new View($this->auth);
