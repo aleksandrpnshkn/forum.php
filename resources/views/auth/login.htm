@@ -1,0 +1,48 @@
+<?php
+declare(strict_types=1);
+
+use Src\Core\Validation\ErrorsBag;
+
+/**
+ * @var ErrorsBag $errorsBag
+ * @var ?string $message
+ */
+?>
+<h1>Login</h1>
+
+<?php if (isset($message)) : ?>
+    <hr>
+    <p><?= $message ?></p>
+    <hr>
+<?php endif; ?>
+
+<form action="/auth/login" method="post">
+    <p>
+        <label>
+            Email
+            <input type="email" name="email">
+        </label>
+        <?php if ($errorsBag->has('email')) : ?>
+            <br>
+            <small><?= $errorsBag->firstMessage('email') ?></small>
+        <?php endif; ?>
+    </p>
+    <p>
+        <label>
+            Password
+            <input type="password" name="password">
+        </label>
+        <?php if ($errorsBag->has('password')) : ?>
+            <br>
+            <small><?= $errorsBag->firstMessage('password') ?></small>
+        <?php endif; ?>
+    </p>
+    <p>
+        <label>
+            <input type="checkbox" name="remember"> Remember me
+        </label>
+    </p>
+    <p>
+        <button type="submit">Login</button>
+    </p>
+</form>

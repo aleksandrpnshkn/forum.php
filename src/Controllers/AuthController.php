@@ -63,4 +63,75 @@ class AuthController extends Controller
             $this->app->view->display('auth/register', ['message' => 'Something gone wrong']);
         }
     }
+
+    public function logInForm()
+    {
+        if ($this->app->auth->isLoggedIn()) {
+            header('Location: /');
+            return;
+        }
+
+        $this->app->view->display('auth/login');
+    }
+
+    public function logIn()
+    {
+        if ($this->app->auth->isLoggedIn()) {
+            header('Location: /');
+            return;
+        }
+
+        $email = $_POST['email'] ?? null;
+        $password = $_POST['password'] ?? null;
+        $remember = isset($_POST['remember']) && $_POST['remember'] === 'on';
+
+        if (
+            $this->validator->validateEmail('email', $email)
+            && $this->validator->validateRequired('password', $password)
+        ) {
+            $user = $this->app->getUserRepository()->getByEmail($email);
+
+            if ($user && $this->verifyPassword($password, $user->password)) {
+                $this->app->auth->logInUser($user);
+
+                if ($remember) {
+                    $user->remember();
+                    setcookie('remember_token', $user->remember_token, $user->remember_token_expires_at->getTimestamp(), '/', '', true, true);
+                }
+
+                header('Location: /');
+                return;
+            }
+
+            if (! $user) {
+                $this->addValidationError('email', 'User not found');
+            }
+        }
+
+        // Show controller's validation errors
+        if ($this->hasValidationErrors()) {
+            $this->app->view->display('auth/login', ['errorsBag' => $this->validator->errorsBag]);
+            return;
+        }
+    }
+
+    private function verifyPassword(string $password, string $hash) : bool
+    {
+        $isCorrect = password_verify($password, $hash);
+
+        if (! $isCorrect) {
+            $this->addValidationError('password', 'Wrong password');
+        }
+
+        return $isCorrect;
+    }
+
+    public function logOut()
+    {
+        if ($this->app->auth->isLoggedIn()) {
+            $this->app->auth->logOut();
+        }
+
+        header('Location: /');
+    }
 }
