@@ -32,6 +32,11 @@ class UserRepository
         return $this->getBy('email', $email);
     }
 
+    public function getByRememberToken(string $token) : ?User
+    {
+        return $this->getBy('remember_token', $token);
+    }
+
     /**
      * Only $value can be provided by user!
      */
@@ -55,6 +60,10 @@ class UserRepository
         $user->email = $userData['email'];
         $user->password = $userData['password'];
         $user->avatar_path = $userData['avatar_path'];
+        $user->remember_token = $userData['remember_token'];
+        $user->remember_token_expires_at = $userData['remember_token_expires_at']
+            ? new DateTime($userData['remember_token_expires_at'])
+            : null;
         $user->created_at = $userData['created_at']
             ? new DateTime($userData['created_at'])
             : null;
@@ -73,14 +82,16 @@ class UserRepository
         try {
             $this->db->dbh
                 ->prepare('
-                    INSERT INTO users (username, email, password, avatar_path)
-                    VALUES (:username, :email, :password, :avatar_path);
+                    INSERT INTO users (username, email, password, avatar_path, remember_token, remember_token_expires_at)
+                    VALUES (:username, :email, :password, :avatar_path, :remember_token, :remember_token_expires_at);
                 ')
                 ->execute([
                     ':username' => $user->username,
                     ':email' => $user->email,
                     ':password' => $user->password,
                     ':avatar_path' => $user->avatar_path,
+                    ':remember_token' => $user->remember_token,
+                    ':remember_token_expires_at' => $user->remember_token_expires_at?->format('Y-m-d H:i:s'),
                 ]);
 
             $user->id = (int)$this->db->dbh->lastInsertId();
@@ -104,7 +115,9 @@ class UserRepository
                         password = :password,
                         avatar_path = :avatar_path,
                         updated_at = :updated_at,
-                        deleted_at = :deleted_at
+                        deleted_at = :deleted_at,
+                        remember_token = :remember_token,
+                        remember_token_expires_at = :remember_token_expires_at
                     WHERE id = :id;
                 ')
                 ->execute([
@@ -114,7 +127,9 @@ class UserRepository
                     ':password' => $user->password,
                     ':avatar_path' => $user->avatar_path,
                     ':updated_at' => (new DateTime())->format('Y-m-d H:i:s'),
-                    ':deleted_at' => $user->deleted_at?->getTimestamp(),
+                    ':deleted_at' => $user->deleted_at?->format('Y-m-d H:i:s'),
+                    ':remember_token' => $user->remember_token,
+                    ':remember_token_expires_at' => $user->remember_token_expires_at?->format('Y-m-d H:i:s'),
                 ]);
         } catch (PDOException $exception) {
             error_log($exception->getMessage());

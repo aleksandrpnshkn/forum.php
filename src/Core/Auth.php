@@ -30,7 +30,30 @@ final class Auth
             return $user ? $this->logInUser($user) : false;
         }
 
+        // Check on if user remembered
+        $token = $_COOKIE['remember_token'] ?? null;
+
+        if ($token) {
+            $user = $this->userRepository->getByRememberToken($token);
+
+            if ($user && ! $user->rememberTokenIsExpired()) {
+                $this->logInUser($user);
+                $_SESSION['userId'] = $this->user->id;
+                return true;
+            }
+            elseif ($user && $user->rememberTokenIsExpired()) {
+                $this->forgetUser();
+            }
+        }
+
         return false;
+    }
+
+    private function forgetUser() : void
+    {
+        $this->user->resetRememberToken();
+        $this->userRepository->update($this->user);
+        setcookie('remember_token', '', 1, '/', '', true, true);
     }
 
     public function logInUser(User $user) : bool
@@ -42,6 +65,7 @@ final class Auth
 
     public function logOut() : bool
     {
+        $this->forgetUser();
         $this->user = null;
         $_SESSION['userId'] = null;
         return true;

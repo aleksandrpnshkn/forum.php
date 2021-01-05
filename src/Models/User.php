@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Src\Models;
 
+use DateInterval;
 use DateTime;
 use Src\Core\Validation\ValidationError;
 use Src\Repositories\UserRepository;
@@ -16,9 +17,33 @@ final class User extends Model
     public ?string $email = null;
     public ?string $password = null;
     public ?string $avatar_path = null;
+    public ?string $remember_token = null;
+    public ?DateTime $remember_token_expires_at = null;
     public ?DateTime $created_at = null; // Can be null on creating
     public ?DateTime $updated_at = null;
     public ?DateTime $deleted_at = null;
+
+    public function rememberTokenIsExpired() : bool
+    {
+        return $this->remember_token_expires_at->getTimestamp() <= time();
+    }
+
+    public function remember(DateInterval $duration = null) : void
+    {
+        if (! $duration) {
+            $duration = new DateInterval('P2W');
+        }
+
+        $this->remember_token = uniqid('', true);
+        $this->remember_token_expires_at = (new DateTime())->add($duration);
+    }
+
+    public function resetRememberToken() : void
+    {
+        $this->remember_token = null;
+        $this->remember_token_expires_at = null;
+    }
+
     public function validate() : bool
     {
         $this->validateUsername();

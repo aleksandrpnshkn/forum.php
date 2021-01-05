@@ -9,6 +9,14 @@ use Tests\Feature\FeatureTestCase;
 
 class UserTest extends FeatureTestCase
 {
+    public function testRemember()
+    {
+        $user = self::makeUser();
+        $user->remember();
+        $this->assertIsString($user->remember_token);
+        $this->assertInstanceOf(\DateTime::class, $user->remember_token_expires_at);
+    }
+
     public function testValidate()
     {
         $user = new User();
