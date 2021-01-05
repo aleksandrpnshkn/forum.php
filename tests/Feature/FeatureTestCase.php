@@ -8,7 +8,7 @@ use Src\Core\App;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-class FeatureTest extends TestCase
+class FeatureTestCase extends TestCase
 {
     private static App $app;
     private static string $migrateSql;

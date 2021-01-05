@@ -12,7 +12,8 @@ class UserRepository
 {
     private Database $db;
 
-    public function __construct(Database $db) {
+    public function __construct(Database $db)
+    {
         $this->db = $db;
     }
 
@@ -22,9 +23,26 @@ class UserRepository
         $stmt->execute([':id' => $id]);
         $userData = $stmt->fetch();
 
-        return $userData
-            ? new User($userData)
-            : false;
+        if (! $userData) {
+            return null;
+        }
+
+        $user = new User();
+        $user->id = $userData['id'] ? (int)$userData['id'] : null;
+        $user->username = $userData['username'];
+        $user->password = $userData['password'];
+        $user->avatar_path = $userData['avatar_path'];
+        $user->created_at = $userData['created_at']
+            ? new DateTime($userData['created_at'])
+            : null;
+        $user->updated_at = $userData['updated_at']
+            ? new DateTime($userData['updated_at'])
+            : null;
+        $user->deleted_at = $userData['deleted_at']
+            ? new DateTime($userData['deleted_at'])
+            : null;
+
+        return $user;
     }
 
     public function insert(User $user) : bool
