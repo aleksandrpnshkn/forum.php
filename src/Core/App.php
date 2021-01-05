@@ -12,7 +12,9 @@ final class App
     public string $tablesPath;
     public string $rollbackPath;
 
+    public View $view;
     public Auth $auth;
+
     private UserRepository $userRepository;
 
     public function __construct()
@@ -22,6 +24,7 @@ final class App
         $this->rollbackPath = realpath(__DIR__ . '/../../database/rollback.sql');
 
         $this->auth = new Auth($this->getUserRepository());
+        $this->view = new View($this->auth);
     }
 
     public function getUserRepository() : UserRepository
@@ -31,13 +34,5 @@ final class App
         }
 
         return $this->userRepository;
-    }
-
-    public function view(string $viewName, array $vars = []) : string
-    {
-        extract($vars, EXTR_OVERWRITE);
-        ob_start();
-        require __DIR__ . '/../../resources/views/' . rtrim(trim($viewName, '/'), '.htm') . '.htm';
-        return ob_get_clean();
     }
 }

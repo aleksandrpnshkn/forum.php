@@ -1,0 +1,54 @@
+<?php
+declare(strict_types=1);
+/**
+ * @var View $this
+ * @var string $_viewPath
+ */
+use Src\Core\View;
+?>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>PHP Forum</title>
+</head>
+<body>
+    <style>
+        hr {
+            display: block;
+            margin: 20px 0;
+        }
+    </style>
+
+    <header>
+        <p>
+            <strong>PHP Forum</strong>
+        </p>
+
+        <b>Nav:</b>
+        <nav>
+            <?php if ($this->auth->isLoggedIn()) : ?>
+                <a href="/auth/logout">Log Out</a>
+            <?php else : ?>
+                <a href="/auth/login">Login</a>
+                <a href="/auth/register">Register</a>
+            <?php endif; ?>
+        </nav>
+    </header>
+
+    <hr>
+
+    <main>
+        <?php require $_viewPath; ?>
+    </main>
+
+    <hr>
+
+    <footer>
+        <a href="">@aleksandrkrzhn</a>
+    </footer>
+</body>
+</html>
