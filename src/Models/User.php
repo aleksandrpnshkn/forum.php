@@ -6,6 +6,7 @@ namespace Src\Models;
 use DateInterval;
 use DateTime;
 use JetBrains\PhpStorm\Pure;
+use Src\Controllers\Controller;
 use Src\Core\Validation\ValidationError;
 use Src\Repositories\UserRepository;
 
@@ -13,7 +14,6 @@ final class User extends Model
 {
     private UserRepository $userRepository;
 
-    public ?int $id = null;
     public ?string $username = null;
     public ?string $email = null;
     public ?string $password = null;
@@ -33,7 +33,7 @@ final class User extends Model
     public function getAvatarUrl() : ?string
     {
         return $this->avatar_path
-            ? '/uploads/' . $this->avatar_path
+            ? Controller::$uploadsDirUrl . '/' . $this->avatar_path
             : null;
     }
 

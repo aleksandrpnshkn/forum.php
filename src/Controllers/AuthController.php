@@ -187,7 +187,7 @@ class AuthController extends Controller
 
         $avatarPath = 'avatars/' . uniqid('', true);
 
-        if (move_uploaded_file($avatarData['tmp_name'], "{$this->app->uploadsDirPath}/$avatarPath")) {
+        if (move_uploaded_file($avatarData['tmp_name'], "{${self::$uploadsDirPath}}/$avatarPath")) {
             return $avatarPath;
         }
         else {

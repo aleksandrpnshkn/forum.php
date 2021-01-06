@@ -13,6 +13,9 @@ use Src\Core\View;
 
 class Controller
 {
+    public static string $uploadsDirPath;
+    public static string $uploadsDirUrl;
+
     protected Auth $auth;
     protected View $view;
 
