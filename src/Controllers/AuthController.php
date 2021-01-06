@@ -26,6 +26,7 @@ class AuthController extends Controller
 
         $username = $_POST['username'] ?? null;
         $email = $_POST['email'] ?? null;
+        $avatarData = $_FILES['avatar'] ?? null;
         $password = $_POST['password'] ?? null;
         $passwordConfirmation = $_POST['password_confirmation'] ?? null;
         $remember = isset($_POST['remember']) && $_POST['remember'] === 'on';
@@ -44,6 +45,13 @@ class AuthController extends Controller
         $user->username = $username;
         $user->email = $email;
         $user->password = password_hash($password, PASSWORD_DEFAULT);
+        $user->avatar_path = $this->handleAvatarUpload($avatarData);
+
+        // Show file errors
+        if ($this->hasValidationErrors()) {
+            $this->app->view->display('auth/register', ['errorsBag' => $this->validator->errorsBag]);
+            return;
+        }
 
         if ($remember) {
             $user->remember();
@@ -52,6 +60,11 @@ class AuthController extends Controller
 
         // Show model's validation errors
         if (! $user->validate()) {
+            // Delete avatar if error
+            if (realpath($user->avatar_path)) {
+                unlink($user->avatar_path);
+            }
+
             $this->app->view->display('auth/register', ['errorsBag' => $user->validator->errorsBag]);
             return;
         }
@@ -133,5 +146,42 @@ class AuthController extends Controller
         }
 
         header('Location: /');
+    }
+
+    private function handleAvatarUpload(array $avatarData) : ?string
+    {
+        if ($avatarData['error'] === UPLOAD_ERR_NO_FILE) {
+            return null;
+        }
+
+        if (
+            $avatarData['size'] > 1024*1024*1
+            || $avatarData['error'] === UPLOAD_ERR_INI_SIZE
+            || $avatarData['error'] === UPLOAD_ERR_FORM_SIZE
+        ) {
+            $this->addValidationError('avatar', 'Image is too big');
+            return null;
+        }
+
+        if ($avatarData['error'] !== UPLOAD_ERR_OK) {
+            $this->addValidationError('avatar', 'Error occurred on file uploading');
+            return null;
+        }
+
+        $allowedMimes = ['image/png', 'image/jpeg'];
+        if (! in_array(mime_content_type($avatarData['tmp_name']), $allowedMimes, true)) {
+            $this->addValidationError('avatar', 'Image should have png or jpg extension');
+            return null;
+        }
+
+        $avatarPath = 'avatars/' . uniqid('', true);
+
+        if (move_uploaded_file($avatarData['tmp_name'], "{$this->app->uploadsDirPath}/$avatarPath")) {
+            return $avatarPath;
+        }
+        else {
+            $this->addValidationError('avatar', 'Error occurred on file uploading');
+            return null;
+        }
     }
 }

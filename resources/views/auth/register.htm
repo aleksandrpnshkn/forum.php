@@ -16,7 +16,7 @@ use Src\Core\Validation\ErrorsBag;
     <hr>
 <?php endif; ?>
 
-<form action="/auth/register" method="post">
+<form action="/auth/register" method="post" enctype="multipart/form-data">
     <p>
         <label>
             Username
@@ -24,6 +24,17 @@ use Src\Core\Validation\ErrorsBag;
             <?php if ($errorsBag->has('username')) : ?>
                 <br>
                 <small><?= $errorsBag->firstMessage('username') ?></small>
+            <?php endif; ?>
+        </label>
+    </p>
+    <p>
+        <input type="hidden" name="MAX_FILE_SIZE" value="<?= 1024*1024*1 ?>">
+        <label>
+            Avatar
+            <input type="file" name="avatar">
+            <?php if ($errorsBag->has('avatar')) : ?>
+                <br>
+                <small><?= $errorsBag->firstMessage('avatar') ?></small>
             <?php endif; ?>
         </label>
     </p>

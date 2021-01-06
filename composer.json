@@ -17,6 +17,7 @@
         "php": "8.*",
         "phpunit/phpunit": "^9.5",
         "ext-mbstring": "*",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "ext-fileinfo": "*"
     }
 }

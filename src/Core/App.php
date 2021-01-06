@@ -8,6 +8,9 @@ use Src\Repositories\UserRepository;
 
 final class App
 {
+    public string $uploadsDirPath;
+    public string $uploadsDirUrl = '/uploads';
+
     public Database $db;
 
     public string $tablesPath;
@@ -23,6 +26,8 @@ final class App
         $this->db = new Database();
         $this->tablesPath = realpath(__DIR__ . '/../../database/migrate.sql');
         $this->rollbackPath = realpath(__DIR__ . '/../../database/rollback.sql');
+
+        $this->uploadsDirPath = realpath(__DIR__ . '/../../public/uploads');
 
         // I don't want to pass everytime App or UserRepository to User constructor
         User::$userRepository = $this->getUserRepository();

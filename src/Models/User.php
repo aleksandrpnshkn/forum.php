@@ -23,6 +23,13 @@ final class User extends Model
     public ?DateTime $updated_at = null;
     public ?DateTime $deleted_at = null;
 
+    public function getAvatarUrl() : ?string
+    {
+        return $this->avatar_path
+            ? '/uploads/' . $this->avatar_path
+            : null;
+    }
+
     public function rememberTokenIsExpired() : bool
     {
         return $this->remember_token_expires_at->getTimestamp() <= time();
