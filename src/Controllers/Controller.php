@@ -5,20 +5,24 @@ namespace Src\Controllers;
 
 use JetBrains\PhpStorm\Pure;
 use Src\Core\App;
+use Src\Core\Auth;
 use Src\Core\Validation\ErrorsBag;
 use Src\Core\Validation\ValidationError;
 use Src\Core\Validation\Validator;
+use Src\Core\View;
 
 class Controller
 {
-    protected App $app;
+    protected Auth $auth;
+    protected View $view;
 
     // Yes, both Model and Controller have validators.
     // Controller is just one of validation layers before Model's validation.
     protected Validator $validator;
 
     #[Pure] public function __construct(App $app) {
-        $this->app = $app;
+        $this->auth = $app->auth;
+        $this->view = $app->view;
         $this->validator = new Validator(new ErrorsBag());
     }
 

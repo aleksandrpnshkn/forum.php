@@ -14,7 +14,7 @@ class UserRepositoryTest extends FeatureTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->userRepository = $this->getApp()->getUserRepository();
+        $this->userRepository = new UserRepository();
     }
 
     public function testInsert()
@@ -39,7 +39,7 @@ class UserRepositoryTest extends FeatureTestCase
     {
         $user = UserTest::makeUser();
         $this->userRepository->insert($user);
-        $this->assertTrue($this->userRepository->delete($user->id));
+        $this->assertTrue($this->userRepository->delete($user));
         $this->assertNull($this->userRepository->getById($user->id));
     }
 }

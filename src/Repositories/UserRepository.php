@@ -4,83 +4,49 @@ declare(strict_types=1);
 namespace Src\Repositories;
 
 use DateTime;
+use Exception;
 use PDOException;
-use Src\Core\Database;
+use Src\Models\Model;
 use Src\Models\User;
 
-class UserRepository
+/**
+ * @method User|null getById(int $id)
+ */
+class UserRepository extends Repository
 {
-    private Database $db;
+    const TABLE_NAME = 'users';
 
-    public function __construct(Database $db)
-    {
-        $this->db = $db;
-    }
-
-    public function getById(int $id) : ?User
-    {
-        return $this->getBy('id', $id);
-    }
-
-    public function getByUsername(string $username) : ?User
+    /**
+     * @return User|null
+     * @throws Exception
+     */
+    public function getByUsername(string $username) : ?Model
     {
         return $this->getBy('username', $username);
     }
 
-    public function getByEmail(string $email) : ?User
+    /**
+     * @return User|null
+     * @throws Exception
+     */
+    public function getByEmail(string $email) : ?Model
     {
         return $this->getBy('email', $email);
     }
 
-    public function getByRememberToken(string $token) : ?User
+    /**
+     * @return User|null
+     * @throws Exception
+     */
+    public function getByRememberToken(string $token) : ?Model
     {
         return $this->getBy('remember_token', $token);
     }
 
-    /**
-     * Only $value can be provided by user!
-     */
-    private function getBy(string $name, mixed $value) : ?User
-    {
-        if (! preg_match('/^[a-z_]+$/', $name)) {
-            throw new \InvalidArgumentException('Column name contains bad chars');
-        }
-
-        $stmt = $this->db->dbh->prepare("SELECT * FROM users WHERE $name = :$name");
-        $stmt->execute([":$name" => $value]);
-        $userData = $stmt->fetch();
-
-        if (! $userData) {
-            return null;
-        }
-
-        $user = new User();
-        $user->id = $userData['id'] ? (int)$userData['id'] : null;
-        $user->username = $userData['username'];
-        $user->email = $userData['email'];
-        $user->password = $userData['password'];
-        $user->avatar_path = $userData['avatar_path'];
-        $user->remember_token = $userData['remember_token'];
-        $user->remember_token_expires_at = $userData['remember_token_expires_at']
-            ? new DateTime($userData['remember_token_expires_at'])
-            : null;
-        $user->created_at = $userData['created_at']
-            ? new DateTime($userData['created_at'])
-            : null;
-        $user->updated_at = $userData['updated_at']
-            ? new DateTime($userData['updated_at'])
-            : null;
-        $user->deleted_at = $userData['deleted_at']
-            ? new DateTime($userData['deleted_at'])
-            : null;
-
-        return $user;
-    }
-
-    public function insert(User $user) : bool
+    public function insert(User|Model $user) : bool
     {
         try {
-            $this->db->dbh
+            self::$db->dbh
                 ->prepare('
                     INSERT INTO users (username, email, password, avatar_path, remember_token, remember_token_expires_at)
                     VALUES (:username, :email, :password, :avatar_path, :remember_token, :remember_token_expires_at);
@@ -94,7 +60,7 @@ class UserRepository
                     ':remember_token_expires_at' => $user->remember_token_expires_at?->format('Y-m-d H:i:s'),
                 ]);
 
-            $user->id = (int)$this->db->dbh->lastInsertId();
+            $user->id = (int)self::$db->dbh->lastInsertId();
         } catch (PDOException $exception) {
             error_log($exception->getMessage());
             return false;
@@ -103,10 +69,10 @@ class UserRepository
         return true;
     }
 
-    public function update(User $user) : bool
+    public function update(User|Model $user) : bool
     {
         try {
-            return $this->db->dbh
+            return self::$db->dbh
                 ->prepare('
                     UPDATE users
                     SET
@@ -137,10 +103,30 @@ class UserRepository
         }
     }
 
-    public function delete(int $id) : bool
+    public function delete(User|Model $user) : bool
     {
-        return $this->db->dbh
+        return self::$db->dbh
             ->prepare('DELETE FROM users WHERE id = :id')
-            ->execute([':id' => $id]);
+            ->execute([':id' => $user->id]);
+    }
+
+    /**
+     * @return User
+     * @throws Exception
+     */
+    protected function fillInModel(array $data): Model
+    {
+        $user = new User();
+        $user->id = $data['id'] ? (int)$data['id'] : null;
+        $user->username = $data['username'];
+        $user->email = $data['email'];
+        $user->password = $data['password'];
+        $user->avatar_path = $data['avatar_path'];
+        $user->remember_token = $data['remember_token'];
+        $user->remember_token_expires_at = $data['remember_token_expires_at']
+            ? new DateTime($data['remember_token_expires_at'])
+            : null;
+        $this->fillInTimestamps($data, $user);
+        return $user;
     }
 }

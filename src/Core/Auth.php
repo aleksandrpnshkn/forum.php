@@ -11,9 +11,9 @@ final class Auth
     private ?User $user = null;
     private UserRepository $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct()
     {
-        $this->userRepository = $userRepository;
+        $this->userRepository = new UserRepository();
         $this->retrieveCurrentUser();
     }
 

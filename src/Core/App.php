@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace Src\Core;
 
-use Src\Models\User;
-use Src\Repositories\UserRepository;
+use Src\Repositories\Repository;
 
 final class App
 {
@@ -19,8 +18,6 @@ final class App
     public View $view;
     public Auth $auth;
 
-    private UserRepository $userRepository;
-
     public function __construct()
     {
         $this->db = new Database();
@@ -29,19 +26,10 @@ final class App
 
         $this->uploadsDirPath = realpath(__DIR__ . '/../../public/uploads');
 
-        // I don't want to pass everytime App or UserRepository to User constructor
-        User::$userRepository = $this->getUserRepository();
+        Repository::$db = $this->db;
 
-        $this->auth = new Auth($this->getUserRepository());
+        $this->auth = new Auth();
         $this->view = new View($this->auth);
-    }
 
-    public function getUserRepository() : UserRepository
-    {
-        if (! isset($this->userRepository)) {
-            $this->userRepository = new UserRepository($this->db);
-        }
-
-        return $this->userRepository;
     }
 }

@@ -3,23 +3,34 @@ declare(strict_types=1);
 
 namespace Src\Controllers;
 
+use JetBrains\PhpStorm\Pure;
+use Src\Core\App;
 use Src\Models\User;
+use Src\Repositories\UserRepository;
 
 class AuthController extends Controller
 {
+    private UserRepository $userRepository;
+
+    #[Pure] public function __construct(App $app)
+    {
+        parent::__construct($app);
+        $this->userRepository = new UserRepository();
+    }
+
     public function registerForm()
     {
-        if ($this->app->auth->isLoggedIn()) {
+        if ($this->auth->isLoggedIn()) {
             header('Location: /');
             return;
         }
 
-        $this->app->view->display('auth/register');
+        $this->view->display('auth/register');
     }
 
     public function register()
     {
-        if ($this->app->auth->isLoggedIn()) {
+        if ($this->auth->isLoggedIn()) {
             header('Location: /');
             return;
         }
@@ -37,7 +48,7 @@ class AuthController extends Controller
 
         // Show controller's validation errors
         if ($this->hasValidationErrors()) {
-            $this->app->view->display('auth/register', ['errorsBag' => $this->validator->errorsBag]);
+            $this->view->display('auth/register', ['errorsBag' => $this->validator->errorsBag]);
             return;
         }
 
@@ -49,7 +60,7 @@ class AuthController extends Controller
 
         // Show file errors
         if ($this->hasValidationErrors()) {
-            $this->app->view->display('auth/register', ['errorsBag' => $this->validator->errorsBag]);
+            $this->view->display('auth/register', ['errorsBag' => $this->validator->errorsBag]);
             return;
         }
 
@@ -65,31 +76,31 @@ class AuthController extends Controller
                 unlink($user->avatar_path);
             }
 
-            $this->app->view->display('auth/register', ['errorsBag' => $user->validator->errorsBag]);
+            $this->view->display('auth/register', ['errorsBag' => $user->validator->errorsBag]);
             return;
         }
 
-        if ($this->app->getUserRepository()->insert($user)) {
+        if ($this->userRepository->insert($user)) {
             header('Location: /');
         }
         else {
-            $this->app->view->display('auth/register', ['message' => 'Something gone wrong']);
+            $this->view->display('auth/register', ['message' => 'Something gone wrong']);
         }
     }
 
     public function logInForm()
     {
-        if ($this->app->auth->isLoggedIn()) {
+        if ($this->auth->isLoggedIn()) {
             header('Location: /');
             return;
         }
 
-        $this->app->view->display('auth/login');
+        $this->view->display('auth/login');
     }
 
     public function logIn()
     {
-        if ($this->app->auth->isLoggedIn()) {
+        if ($this->auth->isLoggedIn()) {
             header('Location: /');
             return;
         }
@@ -102,10 +113,10 @@ class AuthController extends Controller
             $this->validator->validateEmail('email', $email)
             && $this->validator->validateRequired('password', $password)
         ) {
-            $user = $this->app->getUserRepository()->getByEmail($email);
+            $user = $this->userRepository->getByEmail($email);
 
             if ($user && $this->verifyPassword($password, $user->password)) {
-                $this->app->auth->logInUser($user);
+                $this->auth->logInUser($user);
 
                 if ($remember) {
                     $user->remember();
@@ -123,7 +134,7 @@ class AuthController extends Controller
 
         // Show controller's validation errors
         if ($this->hasValidationErrors()) {
-            $this->app->view->display('auth/login', ['errorsBag' => $this->validator->errorsBag]);
+            $this->view->display('auth/login', ['errorsBag' => $this->validator->errorsBag]);
             return;
         }
     }
@@ -141,8 +152,8 @@ class AuthController extends Controller
 
     public function logOut()
     {
-        if ($this->app->auth->isLoggedIn()) {
-            $this->app->auth->logOut();
+        if ($this->auth->isLoggedIn()) {
+            $this->auth->logOut();
         }
 
         header('Location: /');
