@@ -8,6 +8,8 @@ use Src\Repositories\Repository;
 
 final class App
 {
+    const ERROR_LOG = __DIR__ . '/../../logs/error_log';
+
     public Database $db;
 
     public string $tablesPath;
