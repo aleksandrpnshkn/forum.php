@@ -81,6 +81,7 @@ class AuthController extends Controller
         }
 
         if ($this->userRepository->insert($user)) {
+            $this->auth->logInUser($user);
             header('Location: /');
         }
         else {
