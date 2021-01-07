@@ -57,6 +57,7 @@ class AuthController extends Controller
         $user->email = $email;
         $user->password = password_hash($password, PASSWORD_DEFAULT);
         $user->avatar_path = $this->handleAvatarUpload($avatarData);
+        $user->role = User::ROLE_USER;
 
         // Show file errors
         if ($this->hasValidationErrors()) {

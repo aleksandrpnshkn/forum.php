@@ -12,6 +12,10 @@ use Src\Repositories\UserRepository;
 
 final class User extends Model
 {
+    const ROLE_ADMIN = 'admin';
+    const ROLE_MODERATOR = 'moderator';
+    const ROLE_USER = 'user';
+
     private UserRepository $userRepository;
 
     public ?string $username = null;
@@ -19,6 +23,7 @@ final class User extends Model
     public ?string $password = null;
     public ?string $avatar_path = null;
     public ?string $remember_token = null;
+    public ?string $role = null;
     public ?DateTime $remember_token_expires_at = null;
     public ?DateTime $created_at = null; // Can be null on creating
     public ?DateTime $updated_at = null;
@@ -60,6 +65,10 @@ final class User extends Model
 
     public function validate() : bool
     {
+        if (!  in_array($this->role, self::getRoles(), true)) {
+            $this->validator->errorsBag->add(new ValidationError('role', 'Wrong role'));
+        }
+
         $this->validateUsername();
         $this->validateEmail();
         $this->validator->validateRequired('password', $this->password);
@@ -95,7 +104,7 @@ final class User extends Model
             return false;
         }
 
-        $this->validator->validateEmail('email',  $this->email);
+        $this->validator->validateEmail('email', $this->email);
 
         if ($this->userRepository->getByEmail($this->email)) {
             $this->validator->errorsBag->add(
@@ -104,5 +113,24 @@ final class User extends Model
         }
 
         return ! $this->hasValidationErrors();
+    }
+
+    public function isAdmin() : bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isModerator() : bool
+    {
+        return $this->role === self::ROLE_USER;
+    }
+
+    public static function getRoles() : array
+    {
+        return [
+            self::ROLE_USER,
+            self::ROLE_MODERATOR,
+            self::ROLE_ADMIN,
+        ];
     }
 }

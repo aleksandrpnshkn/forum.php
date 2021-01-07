@@ -34,6 +34,7 @@ class UserTest extends FeatureTestCase
         $user->username = 'test';
         $user->email = 'test@example.tld';
         $user->password = 'secret';
+        $user->role = 'user';
         return $user;
     }
 }

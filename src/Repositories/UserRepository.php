@@ -48,8 +48,8 @@ class UserRepository extends Repository
         try {
             self::$db->dbh
                 ->prepare('
-                    INSERT INTO users (username, email, password, avatar_path, remember_token, remember_token_expires_at)
-                    VALUES (:username, :email, :password, :avatar_path, :remember_token, :remember_token_expires_at);
+                    INSERT INTO users (username, email, password, avatar_path, remember_token, remember_token_expires_at, role)
+                    VALUES (:username, :email, :password, :avatar_path, :remember_token, :remember_token_expires_at, :role);
                 ')
                 ->execute([
                     ':username' => $user->username,
@@ -58,6 +58,7 @@ class UserRepository extends Repository
                     ':avatar_path' => $user->avatar_path,
                     ':remember_token' => $user->remember_token,
                     ':remember_token_expires_at' => $user->remember_token_expires_at?->format('Y-m-d H:i:s'),
+                    ':role' => $user->role,
                 ]);
 
             $user->id = (int)self::$db->dbh->lastInsertId();
@@ -83,7 +84,8 @@ class UserRepository extends Repository
                         updated_at = :updated_at,
                         deleted_at = :deleted_at,
                         remember_token = :remember_token,
-                        remember_token_expires_at = :remember_token_expires_at
+                        remember_token_expires_at = :remember_token_expires_at,
+                        role = :role
                     WHERE id = :id;
                 ')
                 ->execute([
@@ -96,6 +98,7 @@ class UserRepository extends Repository
                     ':deleted_at' => $user->deleted_at?->format('Y-m-d H:i:s'),
                     ':remember_token' => $user->remember_token,
                     ':remember_token_expires_at' => $user->remember_token_expires_at?->format('Y-m-d H:i:s'),
+                    ':role' => $user->role,
                 ]);
         } catch (PDOException $exception) {
             error_log($exception->getMessage());
@@ -126,6 +129,7 @@ class UserRepository extends Repository
         $user->remember_token_expires_at = $data['remember_token_expires_at']
             ? new DateTime($data['remember_token_expires_at'])
             : null;
+        $user->role = $data['role'];
         $this->fillInTimestamps($data, $user);
         return $user;
     }

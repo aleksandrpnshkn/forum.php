@@ -7,6 +7,7 @@ CREATE TABLE users (
     messages_count INT UNSIGNED NOT NULL DEFAULT 0, # counting every time amount of messages is heavy task
     remember_token CHAR(23),
     remember_token_expires_at TIMESTAMP,
+    role VARCHAR(20) NOT NULL,
 
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
