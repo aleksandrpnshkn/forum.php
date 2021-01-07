@@ -19,7 +19,12 @@ class View
         }
 
         extract($vars, EXTR_OVERWRITE);
-        $_viewPath = realpath(__DIR__ . '/../../resources/views/' . rtrim(trim($viewName, '/'), '.htm') . '.htm');
+
+        $viewName = trim($viewName, '/');
+        if (! str_ends_with($viewName, '.htm')) {
+            $viewName .= '.htm';
+        }
+        $_viewPath = realpath(__DIR__ . '/../../resources/views/' . $viewName);
 
         if ($_viewPath === false) {
             throw new \Exception('View template not found');
