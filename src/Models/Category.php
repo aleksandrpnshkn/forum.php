@@ -30,7 +30,8 @@ class Category extends Model
         $this->validator->validateMaxLength('name', $this->name, 100);
 
         // Check unique name
-        if ($this->categoryRepository->getByName($this->name)) {
+        $categoryWithSameName = $this->categoryRepository->getByName($this->name);
+        if ($categoryWithSameName && $categoryWithSameName->id !== $this->id) {
             $this->validator->errorsBag->add(new ValidationError('name', 'Category name must be unique'));
         }
 

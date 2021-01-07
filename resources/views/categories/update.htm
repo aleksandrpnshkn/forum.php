@@ -1,0 +1,35 @@
+<?php
+declare(strict_types=1);
+
+use Src\Core\Validation\ErrorsBag;
+use Src\Models\Category;
+
+/**
+ * @var ErrorsBag $errorsBag
+ * @var ?string $message
+ * @var Category $category
+ */
+?>
+<h1>Edit category</h1>
+
+<?php if (isset($message)) : ?>
+    <hr>
+    <p><?= $message ?></p>
+    <hr>
+<?php endif; ?>
+
+<form action="/categories/update?id=<?= $category->id ?>" method="post">
+    <p>
+        <label>
+            Name
+            <input type="text" name="name" value="<?= $category->name ?>">
+            <?php if ($errorsBag->has('name')) : ?>
+                <br>
+                <small><?= $errorsBag->firstMessage('name') ?></small>
+            <?php endif; ?>
+        </label>
+    </p>
+    <p>
+        <button type="submit">Save</button>
+    </p>
+</form>

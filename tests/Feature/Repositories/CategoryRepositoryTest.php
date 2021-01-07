@@ -27,6 +27,7 @@ class CategoryRepositoryTest extends FeatureTestCase
 
         $category->name = 'update';
         $this->assertTrue($this->categoryRepository->update($category));
+        $category = $this->categoryRepository->getById($category->id);
         $this->assertEquals('update', $category->name);
 
         $this->assertTrue($this->categoryRepository->delete($category));

@@ -60,6 +60,58 @@ class CategoryController extends Controller
         }
     }
 
+    public function edit()
+    {
+        if (! $this->canEditCategories()) {
+            $this->forbidden();
+        }
+
+        $id = (int)($_GET['id'] ?? null);
+
+        if (! $id) {
+            header('Location: /');
+            die;
+        }
+
+        $category = $this->categoryRepository->getById($id);
+
+        $this->view->display('categories/update', [
+            'errorsBag' => $category->validator->errorsBag,
+            'category' => $category,
+        ]);
+    }
+
+    public function update()
+    {
+        if (! $this->canEditCategories()) {
+            $this->forbidden();
+        }
+
+        $id = (int)($_GET['id'] ?? null);
+        $message = null;
+
+        if (! $id) {
+            header('Location: /');
+            die;
+        }
+
+        $category = $this->categoryRepository->getById($id);
+        $category->id = $id;
+        $category->name = $_POST['name'] ?? '';
+
+        if ($category->validate()) {
+            $message = $this->categoryRepository->update($category)
+                ? 'Category successfully updated'
+                : 'Something gone wrong';
+        }
+
+        $this->view->display('categories/update', [
+            'errorsBag' => $category->validator->errorsBag,
+            'category' => $category,
+            'message' => $message,
+        ]);
+    }
+
     #[Pure] private function canEditCategories() : bool
     {
         return $this->auth->getUser()
