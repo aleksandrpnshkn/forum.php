@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Src\Controllers;
 
+use JetBrains\PhpStorm\NoReturn;
 use JetBrains\PhpStorm\Pure;
 use Src\Core\App;
 use Src\Core\Auth;
@@ -11,7 +12,7 @@ use Src\Core\Validation\ValidationError;
 use Src\Core\Validation\Validator;
 use Src\Core\View;
 
-class Controller
+abstract class Controller
 {
     public static string $uploadsDirPath;
     public static string $uploadsDirUrl;
@@ -50,5 +51,12 @@ class Controller
     protected function addValidationError(string $attrName, string $errorMessage) : void
     {
         $this->validator->errorsBag->add(new ValidationError($attrName, $errorMessage));
+    }
+
+    #[NoReturn] protected function forbidden() : void
+    {
+        http_response_code(403);
+        $this->view->display('403');
+        die;
     }
 }

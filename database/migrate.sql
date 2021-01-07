@@ -19,11 +19,24 @@ CREATE TABLE users (
     UNIQUE KEY (remember_token)
 );
 
+CREATE TABLE categories (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMP,
+
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
+
 CREATE TABLE boards (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     slug VARCHAR(100) NOT NULL,
     description VARCHAR(255),
+    category_id BIGINT UNSIGNED,
     author_id BIGINT UNSIGNED,
 
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -32,6 +45,10 @@ CREATE TABLE boards (
 
     PRIMARY KEY (id),
     UNIQUE KEY (slug),
+    FOREIGN KEY (category_id)
+        REFERENCES categories(id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
     FOREIGN KEY (author_id)
         REFERENCES users(id)
         ON UPDATE CASCADE

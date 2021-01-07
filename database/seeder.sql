@@ -7,3 +7,6 @@ VALUES
     ('saxophone', 'saxophone@example.tld', 'EUu47~;VbsmDUe?7', 'user'),
     ('tabletennis', 'tabletennis@example.tld', '&cf()PR6C;>d>Lf', 'user'),
     ('rabbit', 'rabbit@example.tld', '5(eLR7Q8pZ<pL:Tk', 'moderator');
+
+INSERT INTO categories (name)
+VALUES ('Vegetables'), ('Coins'), ('Loud noises');

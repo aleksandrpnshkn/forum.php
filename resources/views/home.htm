@@ -1,1 +1,35 @@
-<h1>Добро пожаловать, <?= $username ?>!</h1>
+<?php
+declare(strict_types=1);
+
+/**
+ * @var View $this
+ * @var Category[] $categories
+ * @var bool $canEditCategories
+ */
+
+use Src\Core\View;
+use Src\Models\Category;
+
+?>
+
+<style>
+    .category h2 {
+        padding: 2px 10px;
+        background: antiquewhite;
+    }
+</style>
+
+<strong>Welcome, <?= $this->auth->getUser()?->username ?? 'Guest' ?>!</strong>
+
+<h1>Forum</h1>
+
+<?php if ($canEditCategories) : ?>
+    <a href="/categories/create">Add a category</a>
+<?php endif; ?>
+
+<?php foreach ($categories as $category) : ?>
+    <hr>
+    <section class="category">
+        <h2><?= $category->name ?></h2>
+    </section>
+<?php endforeach; ?>

@@ -1,7 +1,10 @@
 <?php
 declare(strict_types=1);
 
+use Src\Controllers\CategoryController;
+
 require_once __DIR__ . '/../src/bootstrap.php';
 
 global $app;
-$app->view->display('home', ['username' => $app->auth->isLoggedIn() ? $app->auth->getUser()->username : 'Guest' ]);
+$controller = new CategoryController($app);
+$controller->index();

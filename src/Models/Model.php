@@ -11,6 +11,8 @@ abstract class Model
 {
     public Validator $validator;
 
+    public ?int $id = null;
+
     #[Pure] public function __construct() {
         $this->validator = new Validator(new ErrorsBag());
     }
