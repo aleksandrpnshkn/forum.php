@@ -6,11 +6,13 @@ namespace Src\Models;
 use DateTime;
 use JetBrains\PhpStorm\Pure;
 use Src\Core\Validation\ValidationError;
+use Src\Repositories\BoardRepository;
 use Src\Repositories\CategoryRepository;
 
 class Category extends Model
 {
     private CategoryRepository $categoryRepository;
+    private BoardRepository $boardRepository;
 
     public ?string $name = null;
     public ?DateTime $created_at = null;
@@ -21,6 +23,16 @@ class Category extends Model
     {
         parent::__construct();
         $this->categoryRepository = new CategoryRepository();
+        $this->boardRepository = new BoardRepository();
+    }
+
+    public function getBoards() : array
+    {
+        if (! $this->id) {
+            return [];
+        }
+
+        return $this->boardRepository->getAllWhereCategory($this->id);
     }
 
     public function validate(): bool

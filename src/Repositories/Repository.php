@@ -67,6 +67,23 @@ abstract class Repository
         return $stmt->fetchAll();
     }
 
+    protected function getAllDataWhere(string $name, mixed $value) : array
+    {
+        if (! static::TABLE_NAME) {
+            throw new Exception('Table name not set');
+        }
+
+        if (! preg_match('/^[a-z_]+$/', $name)) {
+            throw new \InvalidArgumentException('Column name contains bad chars');
+        }
+
+        $stmt = self::$db->dbh->prepare(
+            'SELECT * FROM ' . static::TABLE_NAME . " WHERE deleted_at IS NULL AND $name = :$name"
+        );
+        $stmt->execute([":$name" => $value]);
+        return $stmt->fetchAll();
+    }
+
     abstract protected function fillInModel(array $data) : Model;
 
     protected function fillInTimestamps(array $data, Model $model) : Model

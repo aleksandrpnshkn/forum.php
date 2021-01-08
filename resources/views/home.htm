@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 use Src\Core\View;
 use Src\Models\Category;
-
 ?>
 
 <style>
@@ -20,7 +19,25 @@ use Src\Models\Category;
 
     .category header {
         padding: 2px 10px;
+        background: burlywood;
+    }
+
+    .category .boards {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .category .boards tr:nth-child(even) {
+        background: beige;
+    }
+
+    .category .boards tr:nth-child(odd) {
         background: antiquewhite;
+    }
+
+    .category .boards td {
+        padding: 2px 10px;
+        border: 1px solid gray;
     }
 </style>
 
@@ -29,7 +46,7 @@ use Src\Models\Category;
 <h1>Forum</h1>
 
 <?php if ($canEditCategories) : ?>
-    <a href="/categories/create">Add a category</a>
+    <a href="/categories/create">Create a category</a>
 <?php endif; ?>
 
 <?php foreach ($categories as $category) : ?>
@@ -39,8 +56,17 @@ use Src\Models\Category;
             <h2><?= $category->name ?></h2>
 
             <?php if ($canEditCategories) : ?>
-                <a href="/categories/update?id=<?= $category->id ?>">Edit</a>
+                <a href="/categories/update?id=<?= $category->id ?>">Edit category</a>
+                <a href="/boards/create">Create a board</a>
             <?php endif; ?>
         </header>
+
+        <table class="boards">
+            <?php foreach ($category->getBoards() as $board) : ?>
+                <tr>
+                    <td><a href="/boards?slug=<?= $board->slug ?>"><?= $board->name ?></a></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
     </section>
 <?php endforeach; ?>
