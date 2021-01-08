@@ -51,4 +51,13 @@ class Validator
         }
         return true;
     }
+
+    public function validateSlug(string $name, string $slug) : bool
+    {
+        if (! preg_match('/^[\da-z\-]+$/', $slug)) {
+            $this->errorsBag->add(new ValidationError($name, 'Slug is not valid.'));
+            return false;
+        }
+        return true;
+    }
 }

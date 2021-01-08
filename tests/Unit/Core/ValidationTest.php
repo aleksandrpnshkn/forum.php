@@ -76,4 +76,29 @@ class ValidationTest extends TestCase
         $this->validator->validateEmail('email', 'email@example.tld');
         $this->assertFalse($this->validator->errorsBag->has('email'));
     }
+
+    public function testValidateSlug()
+    {
+        $valid = [
+            'slug',
+            'slug-2',
+            'slug-asd',
+            '123',
+        ];
+
+        foreach ($valid as $slug) {
+            $this->assertTrue($this->validator->validateSlug('n', $slug), $slug);
+        }
+
+        $invalid = [
+            '',
+            'slug@',
+            'slug slug',
+            'SLUG',
+        ];
+
+        foreach ($invalid as $slug) {
+            $this->assertFalse($this->validator->validateSlug('n', $slug), $slug);
+        }
+    }
 }
