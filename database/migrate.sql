@@ -4,7 +4,9 @@ CREATE TABLE users (
     email VARCHAR(100) NOT NULL,
     password VARCHAR(255) NOT NULL, # for bcrypt 60 would be enough, but default php algorithm can change in future
     avatar_path VARCHAR(255),
-    messages_count INT UNSIGNED NOT NULL DEFAULT 0, # counting every time amount of messages is heavy task
+    # Counting every time amount of messages is heavy task
+    # Also, it allows counting of messages in deleted threads
+    messages_count INT UNSIGNED NOT NULL DEFAULT 0,
     remember_token CHAR(23),
     remember_token_expires_at TIMESTAMP,
     role VARCHAR(20) NOT NULL,
@@ -58,7 +60,8 @@ CREATE TABLE boards (
 CREATE TABLE threads (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
-    message VARCHAR(255),
+    status VARCHAR(20) NOT NULL,
+    is_pinned BOOLEAN DEFAULT FALSE,
     board_id BIGINT UNSIGNED,
     author_id BIGINT UNSIGNED,
 
@@ -80,7 +83,6 @@ CREATE TABLE threads (
 CREATE TABLE messages (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     content TEXT NOT NULL,
-    is_pinned BOOLEAN DEFAULT false,
     author_id BIGINT UNSIGNED,
     thread_id BIGINT UNSIGNED NOT NULL,
 
