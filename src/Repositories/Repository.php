@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Src\Repositories;
 
 use DateTime;
+use Exception;
+use Src\Core\App;
 use Src\Core\Database;
 use Src\Models\Model;
 
@@ -20,7 +22,7 @@ abstract class Repository
     public function delete(Model $model) : bool
     {
         if (! static::TABLE_NAME) {
-            throw new \Exception('Table name not set');
+            throw new Exception('Table name not set');
         }
 
         return self::$db->dbh
@@ -39,7 +41,7 @@ abstract class Repository
     protected function getBy(string $name, mixed $value) : ?Model
     {
         if (! static::TABLE_NAME) {
-            throw new \Exception('Table name not set');
+            throw new Exception('Table name not set');
         }
 
         if (! preg_match('/^[a-z_]+$/', $name)) {
@@ -57,7 +59,7 @@ abstract class Repository
     protected function getAllData() : array
     {
         if (! static::TABLE_NAME) {
-            throw new \Exception('Table name not set');
+            throw new Exception('Table name not set');
         }
 
         $stmt = self::$db->dbh->prepare('SELECT * FROM ' . static::TABLE_NAME . ' WHERE deleted_at IS NULL');
@@ -79,5 +81,10 @@ abstract class Repository
             ? new DateTime($data['deleted_at'])
             : null;
         return $model;
+    }
+
+    protected function log(string $message) : bool
+    {
+        return error_log($message . "\n", LOG_ERR, App::ERROR_LOG);
     }
 }

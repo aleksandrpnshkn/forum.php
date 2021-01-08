@@ -64,7 +64,7 @@ class UserRepository extends Repository
 
             $user->id = (int)self::$db->dbh->lastInsertId();
         } catch (PDOException $exception) {
-            error_log($exception->getMessage() . "\n", LOG_ERR, App::ERROR_LOG);
+            $this->log($exception->getMessage());
             return false;
         }
 
@@ -102,7 +102,7 @@ class UserRepository extends Repository
                     ':role' => $user->role,
                 ]);
         } catch (PDOException $exception) {
-            error_log($exception->getMessage() . "\n", LOG_ERR, App::ERROR_LOG);
+            $this->log($exception->getMessage());
             return false;
         }
     }

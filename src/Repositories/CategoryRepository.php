@@ -6,7 +6,6 @@ namespace Src\Repositories;
 use DateTime;
 use Exception;
 use PDOException;
-use Src\Core\App;
 use Src\Models\Model;
 use Src\Models\Category;
 
@@ -40,7 +39,7 @@ class CategoryRepository extends Repository
 
             $category->id = (int)self::$db->dbh->lastInsertId();
         } catch (PDOException $exception) {
-            error_log($exception->getMessage() . "\n", LOG_ERR, App::ERROR_LOG);
+            $this->log($exception->getMessage());
             return false;
         }
 
@@ -66,7 +65,7 @@ class CategoryRepository extends Repository
                     ':deleted_at' => $category->deleted_at?->format('Y-m-d H:i:s'),
                 ]);
         } catch (PDOException $exception) {
-            error_log($exception->getMessage() . "\n", LOG_ERR, App::ERROR_LOG);
+            $this->log($exception->getMessage());
             return false;
         }
     }
