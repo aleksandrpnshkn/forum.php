@@ -1,0 +1,76 @@
+<?php
+declare(strict_types=1);
+
+use Src\Core\Validation\ErrorsBag;
+use Src\Models\Board;
+use Src\Models\Category;
+
+/**
+ * @var Board $board
+ * @var Category[] $categories
+ * @var ErrorsBag $errorsBag
+ * @var ?string $message
+ */
+?>
+<h1>Create new board</h1>
+
+<?php if (isset($message)) : ?>
+    <hr>
+    <p><?= $message ?></p>
+    <hr>
+<?php endif; ?>
+
+<form action="/boards/create" method="post">
+    <p>
+        <label>
+            Name
+            <input type="text" name="name" value="<?= $board->name ?>">
+            <?php if ($errorsBag->has('name')) : ?>
+                <br>
+                <small><?= $errorsBag->firstMessage('name') ?></small>
+            <?php endif; ?>
+        </label>
+    </p>
+    <p>
+        <label>
+            Slug
+            <input type="text" name="slug" value="<?= $board->slug ?>">
+            <?php if ($errorsBag->has('slug')) : ?>
+                <br>
+                <small><?= $errorsBag->firstMessage('slug') ?></small>
+            <?php endif; ?>
+        </label>
+    </p>
+    <p>
+        <label>
+            Description
+            <textarea name="description"><?= $board->description ?></textarea>
+            <?php if ($errorsBag->has('textarea')) : ?>
+                <br>
+                <small><?= $errorsBag->firstMessage('textarea') ?></small>
+            <?php endif; ?>
+        </label>
+    </p>
+    <p>
+        <label>
+            Category
+            <select name="category_id">
+                <?php if (! $board->category_id) : ?>
+                    <option selected disabled></option>
+                <?php endif; ?>
+                <?php foreach ($categories as $category) : ?>
+                    <option value="<?= $category->id ?>"
+                            <?php if ($board->category_id === $category->id) : ?> selected <?php endif; ?>
+                    ><?= $category->name ?></option>
+                <?php endforeach; ?>
+            </select>
+            <?php if ($errorsBag->has('category')) : ?>
+                <br>
+                <small><?= $errorsBag->firstMessage('category') ?></small>
+            <?php endif; ?>
+        </label>
+    </p>
+    <p>
+        <button type="submit">Create</button>
+    </p>
+</form>

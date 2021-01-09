@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Src\Core;
 
+use JetBrains\PhpStorm\Pure;
 use Src\Models\User;
 use Src\Repositories\UserRepository;
 
@@ -74,5 +75,17 @@ final class Auth
     public function isLoggedIn() : bool
     {
         return (bool)$this->user;
+    }
+
+    #[Pure] public function canEditBoards() : bool
+    {
+        return $this->getUser()
+            && $this->getUser()->isAdmin();
+    }
+
+    #[Pure] public function canEditCategories() : bool
+    {
+        return $this->getUser()
+            && $this->getUser()->isAdmin();
     }
 }

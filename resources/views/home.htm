@@ -5,6 +5,7 @@ declare(strict_types=1);
  * @var View $this
  * @var Category[] $categories
  * @var bool $canEditCategories
+ * @var bool $canEditBoards
  */
 
 use Src\Core\View;
@@ -15,8 +16,18 @@ use Src\Models\Category;
 
 <h1>Forum</h1>
 
-<?php if ($canEditCategories) : ?>
-    <a href="/categories/create">Create a category</a>
+<?php if ($canEditCategories || $canEditBoards) : ?>
+    <nav>
+        <ul>
+            <?php if ($canEditCategories) : ?>
+                <li><a href="/categories/create">Create a category</a></li>
+            <?php endif; ?>
+
+            <?php if ($canEditBoards) : ?>
+                <li><a href="/boards/create">Create a board</a></li>
+            <?php endif; ?>
+        </ul>
+    </nav>
 <?php endif; ?>
 
 <?php foreach ($categories as $category) : ?>
@@ -27,14 +38,26 @@ use Src\Models\Category;
 
             <?php if ($canEditCategories) : ?>
                 <a href="/categories/update?id=<?= $category->id ?>">Edit category</a>
-                <a href="/boards/create">Create a board</a>
             <?php endif; ?>
         </header>
 
         <table class="boards">
             <?php foreach ($category->getBoards() as $board) : ?>
                 <tr>
-                    <td><a href="/boards?slug=<?= $board->slug ?>"><?= $board->name ?></a></td>
+                    <td>
+                        <a href="/boards?slug=<?= $board->slug ?>">
+                            <h3>
+                                <?= $board->name ?>
+                            </h3>
+                        </a>
+
+                        <?php if ($canEditBoards) : ?>
+                            <a href="/boards/update?id=<?= $board->id ?>"><small>Edit</small></a>
+                        <?php endif; ?>
+
+                        <br>
+                        <small><?= $board->description ?></small>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         </table>

@@ -25,13 +25,14 @@ class CategoryController extends Controller
                 ? $this->auth->getUser()->username
                 : 'Guest',
             'categories' => $this->categoryRepository->getAll(),
-            'canEditCategories' => $this->canEditCategories(),
+            'canEditCategories' => $this->auth->canEditCategories(),
+            'canEditBoards' => $this->auth->canEditBoards(),
         ]);
     }
 
     public function create()
     {
-        if (! $this->canEditCategories()) {
+        if (! $this->auth->canEditCategories()) {
             $this->forbidden();
         }
 
@@ -40,7 +41,7 @@ class CategoryController extends Controller
 
     public function store()
     {
-        if (! $this->canEditCategories()) {
+        if (! $this->auth->canEditCategories()) {
             $this->forbidden();
         }
 
@@ -62,7 +63,7 @@ class CategoryController extends Controller
 
     public function edit()
     {
-        if (! $this->canEditCategories()) {
+        if (! $this->auth->canEditCategories()) {
             $this->forbidden();
         }
 
@@ -83,7 +84,7 @@ class CategoryController extends Controller
 
     public function update()
     {
-        if (! $this->canEditCategories()) {
+        if (! $this->auth->canEditCategories()) {
             $this->forbidden();
         }
 
@@ -110,11 +111,5 @@ class CategoryController extends Controller
             'category' => $category,
             'message' => $message,
         ]);
-    }
-
-    #[Pure] private function canEditCategories() : bool
-    {
-        return $this->auth->getUser()
-            && $this->auth->getUser()->isAdmin();
     }
 }

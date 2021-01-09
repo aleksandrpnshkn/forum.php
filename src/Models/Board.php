@@ -39,7 +39,7 @@ class Board extends Model
         $this->validator->validateRequired('name', $this->name);
         $this->validator->validateRequired('slug', $this->slug);
         $this->validator->validateRequired('category', $this->category_id);
-        $this->validator->validateRequired('author_id', $this->author_id);
+        $this->validator->validateRequired('author', $this->author_id);
 
         if ($this->hasValidationErrors()) {
             return false;
@@ -49,6 +49,11 @@ class Board extends Model
         $this->validator->validateMaxLength('name', $this->name ?? '', 100);
 
         $this->validator->validateSlug('slug', $this->slug);
+
+        $boardWithSameSlug = $this->boardRepository->getBySlug($this->slug);
+        if ($boardWithSameSlug && $boardWithSameSlug->id !== $this->id) {
+            $this->validator->errorsBag->add(new ValidationError('slug', 'Slug already exists'));
+        }
 
         $this->validator->validateMaxLength('description', $this->description, 255);
 
