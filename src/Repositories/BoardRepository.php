@@ -21,14 +21,15 @@ class BoardRepository extends Repository
         try {
             self::$db->dbh
                 ->prepare('
-                    INSERT INTO boards (name, slug, description, author_id)
-                    VALUES (:name, :slug, :description, :author_id);
+                    INSERT INTO boards (name, slug, description, author_id, category_id)
+                    VALUES (:name, :slug, :description, :author_id, :category_id);
                 ')
                 ->execute([
                     ':name' => $board->name,
                     ':slug' => $board->slug,
                     ':description' => $board->description,
                     ':author_id' => $board->author_id,
+                    ':category_id' => $board->category_id,
                 ]);
 
             $board->id = (int)self::$db->dbh->lastInsertId();
