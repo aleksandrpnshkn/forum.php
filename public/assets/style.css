@@ -1,0 +1,58 @@
+hr {
+    display: block;
+    margin: 20px 0;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 4px 8px;
+}
+
+.category h2 {
+    display: inline-block;
+    margin: 0 4px 0 0;
+}
+
+.category header {
+    padding: 2px 10px;
+    background: burlywood;
+}
+
+.category .boards {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.category .boards tr:nth-child(even) {
+    background: beige;
+}
+
+.category .boards tr:nth-child(odd) {
+    background: antiquewhite;
+}
+
+.category .boards td {
+    padding: 2px 10px;
+    border: 1px solid gray;
+}
+
+.boards h3 {
+    font-size: 18px;
+    margin: 0 0 4px;
+}
+
+.board {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.board-header {
+    padding: 2px 10px;
+    background: burlywood;
+}
+
+.board th,
+.board td {
+    padding: 2px 10px;
+    border: 1px solid gray;
+}

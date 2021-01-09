@@ -11,36 +11,6 @@ use Src\Core\View;
 use Src\Models\Category;
 ?>
 
-<style>
-    .category h2 {
-        display: inline-block;
-        margin: 0 4px 0 0;
-    }
-
-    .category header {
-        padding: 2px 10px;
-        background: burlywood;
-    }
-
-    .category .boards {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .category .boards tr:nth-child(even) {
-        background: beige;
-    }
-
-    .category .boards tr:nth-child(odd) {
-        background: antiquewhite;
-    }
-
-    .category .boards td {
-        padding: 2px 10px;
-        border: 1px solid gray;
-    }
-</style>
-
 <strong>Welcome, <?= $this->auth->getUser()?->username ?? 'Guest' ?>!</strong>
 
 <h1>Forum</h1>
