@@ -43,6 +43,9 @@ class AuthController extends Controller
         $passwordConfirmation = $_POST['password_confirmation'] ?? null;
         $remember = isset($_POST['remember']) && $_POST['remember'] === 'on';
 
+        // User's validation require hash, but before call password_hash user should provide a pass
+        $this->validator->validateRequired('password', $password);
+
         if ($password !== $passwordConfirmation) {
             $this->addValidationError('password', 'Password not confirmed.');
         }
