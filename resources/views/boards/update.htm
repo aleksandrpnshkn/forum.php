@@ -10,6 +10,7 @@ use Src\Models\Category;
  * @var Category[] $categories
  * @var ErrorsBag $errorsBag
  * @var ?string $message
+ * @var string $csrfField
  */
 ?>
 <nav class="breadcrumbs">
@@ -27,6 +28,7 @@ use Src\Models\Category;
 <?php endif; ?>
 
 <form action="/boards/update?id=<?= $board->id ?>" method="post">
+    <?= $csrfField ?>
     <p>
         <label>
             Name

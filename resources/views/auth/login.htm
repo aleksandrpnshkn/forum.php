@@ -6,6 +6,7 @@ use Src\Core\Validation\ErrorsBag;
 /**
  * @var ErrorsBag $errorsBag
  * @var ?string $message
+ * @var string $csrfField
  */
 ?>
 <h1>Login</h1>
@@ -17,6 +18,7 @@ use Src\Core\Validation\ErrorsBag;
 <?php endif; ?>
 
 <form action="/auth/login" method="post">
+    <?= $csrfField ?>
     <p>
         <label>
             Email

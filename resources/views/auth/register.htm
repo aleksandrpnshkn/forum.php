@@ -6,6 +6,7 @@ use Src\Core\Validation\ErrorsBag;
 /**
  * @var ErrorsBag $errorsBag
  * @var ?string $message
+ * @var string $csrfField
  */
 ?>
 <h1>Registration</h1>
@@ -17,6 +18,7 @@ use Src\Core\Validation\ErrorsBag;
 <?php endif; ?>
 
 <form action="/auth/register" method="post" enctype="multipart/form-data">
+    <?= $csrfField ?>
     <p>
         <label>
             Username

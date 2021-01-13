@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Src\Controllers;
 
-use JetBrains\PhpStorm\Pure;
 use Src\Core\App;
 use Src\Models\Category;
 use Src\Repositories\CategoryRepository;
@@ -12,7 +11,7 @@ class CategoryController extends Controller
 {
     private CategoryRepository $categoryRepository;
 
-    #[Pure] public function __construct(App $app)
+    public function __construct(App $app)
     {
         parent::__construct($app);
         $this->categoryRepository = new CategoryRepository();
@@ -41,6 +40,8 @@ class CategoryController extends Controller
 
     public function store()
     {
+        $this->validateCsrfToken();
+
         if (! $this->auth->canEditCategories()) {
             $this->forbidden();
         }
@@ -84,6 +85,8 @@ class CategoryController extends Controller
 
     public function update()
     {
+        $this->validateCsrfToken();
+
         if (! $this->auth->canEditCategories()) {
             $this->forbidden();
         }

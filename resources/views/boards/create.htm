@@ -10,6 +10,7 @@ use Src\Models\Category;
  * @var Category[] $categories
  * @var ErrorsBag $errorsBag
  * @var ?string $message
+ * @var string $csrfField
  */
 ?>
 
@@ -29,6 +30,7 @@ use Src\Models\Category;
 <?php endif; ?>
 
 <form action="/boards/create" method="post">
+    <?= $csrfField ?>
     <p>
         <label>
             Name

@@ -9,6 +9,7 @@ use Src\Models\Thread;
  * @var bool $canPinThreads
  * @var ErrorsBag $errorsBag
  * @var ?string $message
+ * @var string $csrfField
  */
 ?>
 
@@ -29,6 +30,7 @@ use Src\Models\Thread;
 <?php endif; ?>
 
 <form action="/threads/create?board_id=<?= $thread->board_id ?>" method="post">
+    <?= $csrfField ?>
     <p>
         <label>
             Name

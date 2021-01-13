@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Src\Controllers;
 
 use JetBrains\PhpStorm\NoReturn;
-use JetBrains\PhpStorm\Pure;
 use Src\Core\App;
 use Src\Core\Pagination;
 use Src\Models\Board;
@@ -18,7 +17,7 @@ class BoardController extends Controller
     private ThreadRepository $threadRepository;
     private CategoryRepository $categoryRepository;
 
-    #[Pure] public function __construct(App $app)
+    public function __construct(App $app)
     {
         parent::__construct($app);
         $this->boardRepository = new BoardRepository();
@@ -72,6 +71,8 @@ class BoardController extends Controller
 
     public function store()
     {
+        $this->validateCsrfToken();
+
         if (! $this->auth->canEditBoards()) {
             $this->forbidden();
         }
@@ -117,6 +118,8 @@ class BoardController extends Controller
 
     public function update()
     {
+        $this->validateCsrfToken();
+
         $id = (int)($_GET['id'] ?? -1);
         $board = $this->boardRepository->getById($id);
 

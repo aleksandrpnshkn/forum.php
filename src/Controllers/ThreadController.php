@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Src\Controllers;
 
 use JetBrains\PhpStorm\NoReturn;
-use JetBrains\PhpStorm\Pure;
 use Src\Core\App;
 use Src\Models\Thread;
 use Src\Repositories\ThreadRepository;
@@ -13,7 +12,7 @@ class ThreadController extends Controller
 {
     private ThreadRepository $threadRepository;
 
-    #[Pure] public function __construct(App $app)
+    public function __construct(App $app)
     {
         parent::__construct($app);
         $this->threadRepository = new ThreadRepository();
@@ -60,6 +59,8 @@ class ThreadController extends Controller
 
     public function store()
     {
+        $this->validateCsrfToken();
+
         if (! $this->auth->canCreateThread()) {
             $this->forbidden();
         }
@@ -113,6 +114,8 @@ class ThreadController extends Controller
 
     public function update()
     {
+        $this->validateCsrfToken();
+
         $id = (int)($_GET['id'] ?? null);
         $thread = $this->threadRepository->getById($id);
 

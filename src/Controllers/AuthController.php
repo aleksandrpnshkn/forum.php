@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Src\Controllers;
 
-use JetBrains\PhpStorm\Pure;
 use Src\Core\App;
 use Src\Models\User;
 use Src\Repositories\UserRepository;
@@ -12,7 +11,7 @@ class AuthController extends Controller
 {
     private UserRepository $userRepository;
 
-    #[Pure] public function __construct(App $app)
+    public function __construct(App $app)
     {
         parent::__construct($app);
         $this->userRepository = new UserRepository();
@@ -30,6 +29,8 @@ class AuthController extends Controller
 
     public function register()
     {
+        $this->validateCsrfToken();
+
         if ($this->auth->isLoggedIn()) {
             header('Location: /');
             return;

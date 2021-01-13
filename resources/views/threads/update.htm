@@ -8,6 +8,7 @@ use Src\Core\Validation\ErrorsBag;
  * @var bool $canPinThreads
  * @var ErrorsBag $errorsBag
  * @var ?string $message
+ * @var string $csrfField
  */
 ?>
 
@@ -28,6 +29,7 @@ use Src\Core\Validation\ErrorsBag;
 <?php endif; ?>
 
 <form action="/threads/update?id=<?= $thread->id ?>" method="post">
+    <?= $csrfField ?>
     <p>
         <label>
             Name

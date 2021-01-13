@@ -8,6 +8,7 @@ use Src\Models\Category;
  * @var ErrorsBag $errorsBag
  * @var ?string $message
  * @var Category $category
+ * @var string $csrfField
  */
 ?>
 
@@ -27,6 +28,7 @@ use Src\Models\Category;
 <?php endif; ?>
 
 <form action="/categories/update?id=<?= $category->id ?>" method="post">
+    <?= $csrfField ?>
     <p>
         <label>
             Name
