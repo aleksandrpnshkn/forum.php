@@ -12,6 +12,12 @@ use Src\Models\Category;
  * @var ?string $message
  */
 ?>
+<nav class="breadcrumbs">
+    <a href="/">Home</a>
+    > <a><?= $board->getCategory()->name ?></a> <?php // categories don't have separate pages, this crumb for convenience ?>
+    > <a>Create new board</a>
+</nav>
+
 <h1>Edit board</h1>
 
 <?php if (isset($message)) : ?>

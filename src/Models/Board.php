@@ -34,6 +34,13 @@ class Board extends Model
         $this->userRepository = new UserRepository();
     }
 
+    public function getCategory() : ?Category
+    {
+        return $this->category_id
+            ? $this->categoryRepository->getById($this->category_id)
+            : null;
+    }
+
     public function validate(): bool
     {
         $this->validator->validateRequired('name', $this->name);
