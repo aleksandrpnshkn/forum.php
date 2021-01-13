@@ -3,6 +3,11 @@ hr {
     margin: 20px 0;
 }
 
+.pagination {
+    text-align: center;
+    margin: 10px;
+}
+
 .pagination a {
     display: inline-block;
     padding: 4px 8px;

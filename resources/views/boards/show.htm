@@ -1,0 +1,58 @@
+<?php
+declare(strict_types=1);
+
+use Src\Core\Pagination;
+use Src\Models\Board;
+use Src\Models\Thread;
+
+/**
+ * @var Board $board
+ * @var bool $canCreateThreads
+ * @var bool $canEditThread
+ * @var Thread[] $threads
+ * @var Pagination $pagination
+ */
+?>
+
+<nav class="breadcrumbs">
+    <a href="/">Home</a>
+    > <a><?= $board->name ?> Board</a>
+</nav>
+
+<hr>
+
+<ul>
+    <?php if ($canCreateThreads) : ?>
+        <li><a href="/threads/create?board_id=<?= $board->id ?>">Create new thread</a></li>
+    <?php endif; ?>
+</ul>
+
+<hr>
+
+<header class="board-header">
+    <h1><?= $board->name ?></h1>
+    <?php if ($board->description) : ?>
+        <p><?= $board->description ?></p>
+    <?php endif; ?>
+</header>
+
+<table class="board">
+    <tr>
+        <th>Status</th>
+        <th>Pinned</th>
+        <th>Name</th>
+        <th>Author</th>
+        <th>Last Update</th>
+    </tr>
+    <?php foreach ($threads as $thread) : ?>
+        <tr>
+            <td><?= $thread->status ?></td>
+            <td><?= $thread->is_pinned ? '+' : '-' ?></td>
+            <td><a href="/threads?id=<?= $thread->id ?>"><?= $thread->name ?></a></td>
+            <td><?= $thread->getAuthor()->username ?></td>
+            <td><?= $thread->updated_at->format('m/d/Y H:m:s') ?></td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+
+<?php echo $pagination->buildHtml(); ?>

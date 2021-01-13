@@ -1,0 +1,53 @@
+<?php
+declare(strict_types=1);
+
+use Src\Core\Validation\ErrorsBag;
+use Src\Models\Thread;
+
+/**
+ * @var Thread $thread
+ * @var bool $canPinThreads
+ * @var ErrorsBag $errorsBag
+ * @var ?string $message
+ */
+?>
+
+<nav class="breadcrumbs">
+    <a href="/">Home</a>
+    > <a href="/boards?slug=<?= $thread->getBoard()->slug ?>"><?= $thread->getBoard()->name ?> Board</a>
+    > <a>Create a thread</a>
+</nav>
+
+<hr>
+
+<h1>Update The Thread</h1>
+
+<?php if (isset($message)) : ?>
+    <hr>
+    <p><?= $message ?></p>
+    <hr>
+<?php endif; ?>
+
+<form action="/threads/create?board_id=<?= $thread->board_id ?>" method="post">
+    <p>
+        <label>
+            Name
+            <input type="text" name="name" value="<?= $thread->name ?>">
+            <?php if ($errorsBag->has('name')) : ?>
+                <br>
+                <small><?= $errorsBag->firstMessage('name') ?></small>
+            <?php endif; ?>
+        </label>
+    </p>
+    <?php if ($canPinThreads) : ?>
+        <p>
+            <label>
+                <input type="checkbox" name="is_pinned" value="<?= $thread->is_pinned ?>">
+                Pin
+            </label>
+        </p>
+    <?php endif; ?>
+    <p>
+        <button type="submit">Create</button>
+    </p>
+</form>

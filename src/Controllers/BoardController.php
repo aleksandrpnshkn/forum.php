@@ -43,8 +43,9 @@ class BoardController extends Controller
         $threadsCount = $this->threadRepository->countWhereBoardId($board->id);
         $page = (int)($_GET['page'] ?? 1);
 
-        $this->view->display('boards/index', [
+        $this->view->display('boards/show', [
             'board' => $board,
+            'canCreateThreads' => $this->auth->canPinThreads(),
             'threads' => $this->threadRepository->getForPageWhereBoardId($page, $board->id),
             'pagination' => new Pagination($_SERVER['REQUEST_URI'], $threadsCount, $page),
         ]);

@@ -1,0 +1,63 @@
+<?php
+declare(strict_types=1);
+
+use Src\Core\Validation\ErrorsBag;
+
+/**
+ * @var \Src\Models\Thread $thread
+ * @var bool $canPinThreads
+ * @var ErrorsBag $errorsBag
+ * @var ?string $message
+ */
+?>
+
+<nav class="breadcrumbs">
+    <a href="/">Home</a>
+    > <a href="/boards?slug=<?= $thread->getBoard()->slug ?>"><?= $thread->getBoard()->name ?> Board</a>
+    > <a>Update the thread</a>
+</nav>
+
+<hr>
+
+<h1>Update the thread</h1>
+
+<?php if (isset($message)) : ?>
+    <hr>
+    <p><?= $message ?></p>
+    <hr>
+<?php endif; ?>
+
+<form action="/threads/update?id=<?= $thread->id ?>" method="post">
+    <p>
+        <label>
+            Name
+            <input type="text" name="name" value="<?= $thread->name ?>">
+            <?php if ($errorsBag->has('name')) : ?>
+                <br>
+                <small><?= $errorsBag->firstMessage('name') ?></small>
+            <?php endif; ?>
+        </label>
+    </p>
+
+    <?php if ($thread->isOpen()) : ?>
+        <p>
+            <label>
+                <input type="checkbox" name="is_closed">
+                Close
+            </label>
+        </p>
+    <?php endif; ?>
+
+    <?php if ($canPinThreads) : ?>
+        <p>
+            <label>
+                <input type="checkbox" name="is_pinned" <?= $thread->is_pinned ? 'checked' : null ?>>
+                Pin
+            </label>
+        </p>
+    <?php endif; ?>
+
+    <p>
+        <button type="submit">Save</button>
+    </p>
+</form>

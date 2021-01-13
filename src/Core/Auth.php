@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Src\Core;
 
 use JetBrains\PhpStorm\Pure;
+use Src\Models\Thread;
 use Src\Models\User;
 use Src\Repositories\UserRepository;
 
@@ -87,5 +88,30 @@ final class Auth
     {
         return $this->getUser()
             && $this->getUser()->isAdmin();
+    }
+
+    #[Pure] public function canCreateThread() : bool
+    {
+        return $this->getUser() && ! $this->getUser()->is_banned;
+    }
+
+    #[Pure] public function canPinThreads() : bool
+    {
+        return $this->getUser()
+            && (
+                $this->getUser()->isModerator()
+                || $this->getUser()->isAdmin()
+            );
+    }
+
+    #[Pure] public function canEditThread(Thread $thread = null) : bool
+    {
+        return ( // if author
+                $thread
+                && $this->getUser()
+                && $this->getUser()->id === $thread->author_id
+            )
+            || $this->getUser()->isModerator()
+            || $this->getUser()->isAdmin();
     }
 }
