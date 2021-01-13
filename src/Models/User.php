@@ -24,6 +24,7 @@ final class User extends Model
     public ?string $avatar_path = null;
     public ?string $remember_token = null;
     public ?string $role = null;
+    public ?bool $is_banned = false;
     public ?DateTime $remember_token_expires_at = null;
     public ?DateTime $created_at = null; // Can be null on creating
     public ?DateTime $updated_at = null;

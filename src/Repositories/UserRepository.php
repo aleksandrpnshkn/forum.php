@@ -49,8 +49,8 @@ class UserRepository extends Repository
         try {
             self::$db->dbh
                 ->prepare('
-                    INSERT INTO users (username, email, password, avatar_path, remember_token, remember_token_expires_at, role)
-                    VALUES (:username, :email, :password, :avatar_path, :remember_token, :remember_token_expires_at, :role);
+                    INSERT INTO users (username, email, password, avatar_path, remember_token, remember_token_expires_at, role, is_banned)
+                    VALUES (:username, :email, :password, :avatar_path, :remember_token, :remember_token_expires_at, :role, :is_banned);
                 ')
                 ->execute([
                     ':username' => $user->username,
@@ -60,6 +60,7 @@ class UserRepository extends Repository
                     ':remember_token' => $user->remember_token,
                     ':remember_token_expires_at' => $user->remember_token_expires_at?->format('Y-m-d H:i:s'),
                     ':role' => $user->role,
+                    ':is_banned' => (int)$user->is_banned,
                 ]);
 
             $user->id = (int)self::$db->dbh->lastInsertId();
@@ -86,7 +87,8 @@ class UserRepository extends Repository
                         deleted_at = :deleted_at,
                         remember_token = :remember_token,
                         remember_token_expires_at = :remember_token_expires_at,
-                        role = :role
+                        role = :role,
+                        is_banned = :is_banned
                     WHERE id = :id;
                 ')
                 ->execute([
@@ -100,6 +102,7 @@ class UserRepository extends Repository
                     ':remember_token' => $user->remember_token,
                     ':remember_token_expires_at' => $user->remember_token_expires_at?->format('Y-m-d H:i:s'),
                     ':role' => $user->role,
+                    ':is_banned' => (int)$user->is_banned,
                 ]);
         } catch (PDOException $exception) {
             $this->log($exception->getMessage());
@@ -131,6 +134,7 @@ class UserRepository extends Repository
             ? new DateTime($data['remember_token_expires_at'])
             : null;
         $user->role = $data['role'];
+        $user->is_banned = (bool)$data['is_banned'];
         $this->fillInTimestamps($data, $user);
         return $user;
     }

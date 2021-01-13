@@ -10,6 +10,7 @@ CREATE TABLE users (
     remember_token CHAR(23),
     remember_token_expires_at TIMESTAMP,
     role VARCHAR(20) NOT NULL,
+    is_banned BOOLEAN DEFAULT FALSE,
 
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
