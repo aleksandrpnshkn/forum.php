@@ -74,7 +74,7 @@ class AuthController extends Controller
         // Show model's validation errors
         if (! $user->validate()) {
             // Delete avatar if error
-            if (realpath($user->avatar_path)) {
+            if ($user->avatar_path && realpath($user->avatar_path)) {
                 unlink($user->avatar_path);
             }
 
