@@ -105,10 +105,11 @@ class Pagination
 
         $html = '<nav class="pagination">';
 
-        $html .= $pagination['first']
-            ? '<a href="' . $pagination['first'] . '">' . htmlspecialchars('«') . '</a>'
-            : '';
-        $html .= '<a href="' . $pagination['prev'] . '">' . htmlspecialchars('<') . '</a>';
+        $href = $pagination['first'] ? 'href="' . $pagination['first'] . '"' : '';
+        $html .= '<a ' . $href . '>' . htmlspecialchars('«') . '</a>';
+
+        $href = $pagination['prev'] ? 'href="' . $pagination['prev'] . '"' : '';
+        $html .= '<a ' . $href . '>' . htmlspecialchars('<') . '</a>';
 
         $prev = null;
 
@@ -118,13 +119,16 @@ class Pagination
                     $html .= '...';
                 }
                 else {
-                    $html .= '<a href="' . $path . '">' . $key . '</a>';
+                    $html .= '<a ' . ($path ? 'href="' . $path . '"' : '') . '>' . $key . '</a>';
                 }
             }
         }
 
-        $html .= '<a href="' . $pagination['next'] . '">' . htmlspecialchars('>') . '</a>';
-        $html .= '<a href="' . $pagination['last'] . '">' . htmlspecialchars('»') . '</a>';
+        $href = $pagination['next'] ? 'href="' . $pagination['next'] . '"' : '';
+        $html .= '<a ' . $href . '>' . htmlspecialchars('>') . '</a>';
+
+        $href = $pagination['last'] ? 'href="' . $pagination['last'] . '"' : '';
+        $html .= '<a ' . $href . '>' . htmlspecialchars('»') . '</a>';
 
         return $html;
     }
