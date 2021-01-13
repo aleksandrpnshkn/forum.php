@@ -124,7 +124,7 @@ class Pagination
         }
 
         $html .= '<a href="' . $pagination['next'] . '">' . htmlspecialchars('>') . '</a>';
-        $html .= '<a href="' . $pagination['prev'] . '">' . htmlspecialchars('»') . '</a>';
+        $html .= '<a href="' . $pagination['last'] . '">' . htmlspecialchars('»') . '</a>';
 
         return $html;
     }
