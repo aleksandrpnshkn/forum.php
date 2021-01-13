@@ -16,7 +16,7 @@ use Src\Models\Thread;
 
 <nav class="breadcrumbs">
     <a href="/">Home</a>
-    > <a><?= $board->name ?> Board</a>
+    > <a><?= htmlentities($board->name) ?> Board</a>
 </nav>
 
 <hr>
@@ -30,9 +30,9 @@ use Src\Models\Thread;
 <hr>
 
 <header class="board-header">
-    <h1><?= $board->name ?></h1>
+    <h1><?= htmlentities($board->name) ?></h1>
     <?php if ($board->description) : ?>
-        <p><?= $board->description ?></p>
+        <p><?= htmlentities($board->description) ?></p>
     <?php endif; ?>
 </header>
 
@@ -48,8 +48,8 @@ use Src\Models\Thread;
         <tr>
             <td><?= $thread->status ?></td>
             <td><?= $thread->is_pinned ? '+' : '-' ?></td>
-            <td><a href="/threads?id=<?= $thread->id ?>"><?= $thread->name ?></a></td>
-            <td><?= $thread->getAuthor()->username ?></td>
+            <td><a href="/threads?id=<?= $thread->id ?>"><?= htmlentities($thread->name) ?></a></td>
+            <td><?= htmlentities($thread->getAuthor()->username) ?></td>
             <td><?= $thread->updated_at->format('m/d/Y H:m:s') ?></td>
         </tr>
     <?php endforeach; ?>

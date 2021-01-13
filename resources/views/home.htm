@@ -12,7 +12,7 @@ use Src\Core\View;
 use Src\Models\Category;
 ?>
 
-<strong>Welcome, <?= $this->auth->getUser()?->username ?? 'Guest' ?>!</strong>
+<strong>Welcome, <?= $this->auth->getUser() ? htmlentities($this->auth->getUser()->username) : 'Guest' ?>!</strong>
 
 <h1>Forum</h1>
 
@@ -34,7 +34,7 @@ use Src\Models\Category;
     <hr>
     <section class="category">
         <header>
-            <h2><?= $category->name ?></h2>
+            <h2><?= htmlentities($category->name) ?></h2>
 
             <?php if ($canEditCategories) : ?>
                 <a href="/categories/update?id=<?= $category->id ?>">Edit category</a>
@@ -47,7 +47,7 @@ use Src\Models\Category;
                     <td>
                         <a href="/boards?slug=<?= $board->slug ?>">
                             <h3>
-                                <?= $board->name ?>
+                                <?= htmlentities($board->name) ?>
                             </h3>
                         </a>
 
@@ -55,8 +55,10 @@ use Src\Models\Category;
                             <a href="/boards/update?id=<?= $board->id ?>"><small>Edit</small></a>
                         <?php endif; ?>
 
-                        <br>
-                        <small><?= $board->description ?></small>
+                        <?php if ($board->description) : ?>
+                            <br>
+                            <small><?= htmlentities($board->description) ?></small>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

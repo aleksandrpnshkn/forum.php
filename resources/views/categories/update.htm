@@ -13,7 +13,7 @@ use Src\Models\Category;
 
 <nav class="breadcrumbs">
     <a href="/">Home</a>
-    > <a>Create new category</a>
+    > <a>Update the category</a>
 </nav>
 
 <hr>
@@ -30,7 +30,7 @@ use Src\Models\Category;
     <p>
         <label>
             Name
-            <input type="text" name="name" value="<?= $category->name ?>">
+            <input type="text" name="name" value="<?= htmlentities($category->name ?? '', ENT_QUOTES) ?>">
             <?php if ($errorsBag->has('name')) : ?>
                 <br>
                 <small><?= $errorsBag->firstMessage('name') ?></small>

@@ -13,7 +13,7 @@ use Src\Core\Validation\ErrorsBag;
 
 <nav class="breadcrumbs">
     <a href="/">Home</a>
-    > <a href="/boards?slug=<?= $thread->getBoard()->slug ?>"><?= $thread->getBoard()->name ?> Board</a>
+    > <a href="/boards?slug=<?= $thread->getBoard()->slug ?>"><?= htmlentities($thread->getBoard()->name) ?> Board</a>
     > <a>Update the thread</a>
 </nav>
 
@@ -31,7 +31,7 @@ use Src\Core\Validation\ErrorsBag;
     <p>
         <label>
             Name
-            <input type="text" name="name" value="<?= $thread->name ?>">
+            <input type="text" name="name" value="<?= htmlentities($thread->name ?? '', ENT_QUOTES) ?>">
             <?php if ($errorsBag->has('name')) : ?>
                 <br>
                 <small><?= $errorsBag->firstMessage('name') ?></small>

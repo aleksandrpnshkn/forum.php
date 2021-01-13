@@ -14,8 +14,8 @@ use Src\Models\Category;
 ?>
 <nav class="breadcrumbs">
     <a href="/">Home</a>
-    > <a><?= $board->getCategory()->name ?></a> <?php // categories don't have separate pages, this crumb for convenience ?>
-    > <a>Create new board</a>
+    > <a><?= htmlentities($board->getCategory()->name) ?></a> <?php // categories don't have separate pages, this crumb for convenience ?>
+    > <a>Update the board</a>
 </nav>
 
 <h1>Edit board</h1>
@@ -30,7 +30,7 @@ use Src\Models\Category;
     <p>
         <label>
             Name
-            <input type="text" name="name" value="<?= $board->name ?>">
+            <input type="text" name="name" value="<?= htmlentities($board->name ?? '', ENT_QUOTES) ?>">
             <?php if ($errorsBag->has('name')) : ?>
                 <br>
                 <small><?= $errorsBag->firstMessage('name') ?></small>
@@ -40,7 +40,7 @@ use Src\Models\Category;
     <p>
         <label>
             Slug
-            <input type="text" name="slug" value="<?= $board->slug ?>">
+            <input type="text" name="slug" value="<?= htmlentities($board->slug ?? '', ENT_QUOTES) ?>">
             <?php if ($errorsBag->has('slug')) : ?>
                 <br>
                 <small><?= $errorsBag->firstMessage('slug') ?></small>
@@ -50,7 +50,7 @@ use Src\Models\Category;
     <p>
         <label>
             Description
-            <textarea name="description"><?= $board->description ?></textarea>
+            <textarea name="description"><?= htmlentities($board->description ?? '') ?></textarea>
             <?php if ($errorsBag->has('textarea')) : ?>
                 <br>
                 <small><?= $errorsBag->firstMessage('textarea') ?></small>
@@ -67,7 +67,7 @@ use Src\Models\Category;
                 <?php foreach ($categories as $category) : ?>
                     <option value="<?= $category->id ?>"
                         <?php if ($board->category_id === $category->id) : ?> selected <?php endif; ?>
-                    ><?= $category->name ?></option>
+                    ><?= htmlentities($category->name) ?></option>
                 <?php endforeach; ?>
             </select>
             <?php if ($errorsBag->has('category')) : ?>

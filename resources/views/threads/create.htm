@@ -14,13 +14,13 @@ use Src\Models\Thread;
 
 <nav class="breadcrumbs">
     <a href="/">Home</a>
-    > <a href="/boards?slug=<?= $thread->getBoard()->slug ?>"><?= $thread->getBoard()->name ?> Board</a>
+    > <a href="/boards?slug=<?= $thread->getBoard()->slug ?>"><?= htmlentities($thread->getBoard()->name) ?> Board</a>
     > <a>Create a thread</a>
 </nav>
 
 <hr>
 
-<h1>Update The Thread</h1>
+<h1>Create a thread</h1>
 
 <?php if (isset($message)) : ?>
     <hr>
@@ -32,7 +32,7 @@ use Src\Models\Thread;
     <p>
         <label>
             Name
-            <input type="text" name="name" value="<?= $thread->name ?>">
+            <input type="text" name="name" value="<?= htmlentities($thread->name ?? '', ENT_QUOTES) ?>">
             <?php if ($errorsBag->has('name')) : ?>
                 <br>
                 <small><?= $errorsBag->firstMessage('name') ?></small>

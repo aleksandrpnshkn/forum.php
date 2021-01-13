@@ -11,20 +11,22 @@ declare(strict_types=1);
     <a href="/">Home</a>
 
     <?php if ($thread->board_id) : ?>
-        > <a href="/boards?slug=<?= $thread->getBoard()->slug ?>"><?= $thread->getBoard()->name ?></a>
+        > <a href="/boards?slug=<?= $thread->getBoard()->slug ?>"><?= htmlentities($thread->getBoard()->name) ?></a>
     <?php else : ?>
         <a>Unknown category</a>
     <?php endif; ?>
 
-    > <a><?= $thread->name ?></a>
+    > <a><?= htmlentities($thread->name) ?></a>
 </nav>
 
 <hr>
 
-<h1><?= $thread->name ?></h1>
+<h1><?= htmlentities($thread->name) ?></h1>
+
 <?php if ($canEditThread) : ?>
-<p><a href="/threads/update?id=<?= $thread->id ?>">Edit</a></p>
+    <p><a href="/threads/update?id=<?= $thread->id ?>">Edit</a></p>
 <?php endif; ?>
+
 <p>
     <small>Status: <?= $thread->status ?></small><br>
     <small>Created: <?= $thread->created_at->format('m/d/Y H:m:s') ?></small><br>
