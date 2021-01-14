@@ -7,6 +7,7 @@ use Src\Core\App;
 use Src\Models\Message;
 use Src\Models\Thread;
 use Src\Repositories\MessageRepository;
+use Src\Repositories\Repository;
 use Src\Repositories\ThreadRepository;
 
 class MessageController extends Controller
@@ -71,11 +72,18 @@ class MessageController extends Controller
             return;
         }
 
-        if ($this->messageRepository->insert($message)) {
+        Repository::$db->dbh->beginTransaction();
+
+        if (
+            $this->messageRepository->insert($message)
+            && $this->threadRepository->update($thread) // Indicate that the thread was updated
+            && Repository::$db->dbh->commit()
+        ) {
             header('Location: /threads?id=' . $message->thread_id);
             return;
         }
 
+        Repository::$db->dbh->rollBack();
         $this->create($message, $thread, 'Something gone wrong');
     }
 
