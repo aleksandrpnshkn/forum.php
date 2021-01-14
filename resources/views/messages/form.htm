@@ -1,0 +1,50 @@
+<?php
+declare(strict_types=1);
+
+use Src\Core\Validation\ErrorsBag;
+use Src\Models\Message;
+use Src\Models\Thread;
+
+/**
+ * @var Thread $thread
+ * @var Message $message
+ * @var ErrorsBag $errorsBag
+ * @var ?string $appMessage
+ * @var string $actionUrl
+ * @var string $csrfField
+ */
+?>
+
+<nav class="breadcrumbs">
+    <a href="/">Home</a>
+    > <a href="/threads?id=<?= $thread->id ?>"><?= htmlentities($thread->name) ?></a>
+    > <a><?= $message->id ? 'Update the reply' : 'Create a reply' ?></a>
+</nav>
+
+<hr>
+
+<h1><?= $message->id ? 'Update the reply' : 'Create a reply' ?></h1>
+
+<?php if (isset($appMessage)) : ?>
+    <hr>
+    <p><?= $appMessage ?></p>
+    <hr>
+<?php endif; ?>
+
+<form action="<?= $actionUrl ?>" method="post">
+    <?= $csrfField ?>
+    <p>
+        <label>
+            Content
+            <textarea name="content"><?= htmlentities($message->content ?? '') ?></textarea>
+
+            <?php if ($errorsBag->has('content')) : ?>
+                <br>
+                <small><?= $errorsBag->firstMessage('content') ?></small>
+            <?php endif; ?>
+        </label>
+    </p>
+    <p>
+        <button type="submit"><?= $message->id ? 'Update' : 'Create' ?></button>
+    </p>
+</form>

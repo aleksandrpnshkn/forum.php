@@ -65,8 +65,14 @@ hr {
 
 .message {
     width: 100%;
-    border-collapse: collapse;
+    margin-bottom: 10px;
+
     background: antiquewhite;
+    border-collapse: collapse;
+}
+
+.message:last-child {
+    margin-bottom: 0;
 }
 
 .message th,
@@ -81,5 +87,10 @@ hr {
 }
 
 .message__author {
-    width: 150px;
+    width: 170px;
+}
+
+.message__avatar img {
+    max-width: 170px;
+    max-height: 170px;
 }

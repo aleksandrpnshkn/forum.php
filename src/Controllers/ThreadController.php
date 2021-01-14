@@ -5,6 +5,7 @@ namespace Src\Controllers;
 
 use JetBrains\PhpStorm\NoReturn;
 use Src\Core\App;
+use Src\Core\Pagination;
 use Src\Models\Message;
 use Src\Models\Thread;
 use Src\Repositories\MessageRepository;
@@ -32,13 +33,16 @@ class ThreadController extends Controller
             $this->threadNotFound();
         }
 
-        $page = $_GET['page'] ?? 1;
-        $messages = $this->messageRepository->getForPageWhereThread($thread->id, $page, 10);
+        $page = (int)($_GET['page'] ?? 1);
+        $messages = $this->messageRepository->getForPageWhereThread($thread->id, $page);
+        $messagesCount = $this->messageRepository->countWhereThread($thread->id);
 
         $this->view->display('threads/show', [
             'thread' => $thread,
             'messages' => $messages,
+            'pagination' => new Pagination('/threads?id=' . $thread->id, $messagesCount, $page),
             'canEditThread' => $this->auth->canEditThread(),
+            'canReply' => $this->auth->canReply($thread),
         ]);
     }
 

@@ -1,13 +1,18 @@
 <?php
 declare(strict_types=1);
 
+use Src\Core\Pagination;
+use Src\Core\View;
 use Src\Models\Message;
 use Src\Models\Thread;
 
 /**
  * @var Thread $thread
  * @var Message[] $messages
+ * @var Pagination $pagination
  * @var bool $canEditThread
+ * @var bool $canReply
+ * @var View $this
  */
 ?>
 
@@ -28,7 +33,11 @@ use Src\Models\Thread;
 <h1><?= htmlentities($thread->name) ?></h1>
 
 <?php if ($canEditThread) : ?>
-    <p><a href="/threads/update?id=<?= $thread->id ?>">Edit</a></p>
+    <a href="/threads/update?id=<?= $thread->id ?>">Edit</a>
+<?php endif; ?>
+
+<?php if ($canReply) : ?>
+    <a href="/messages/create?thread_id=<?= $thread->id ?>">Reply</a>
 <?php endif; ?>
 
 <p>
@@ -42,16 +51,46 @@ use Src\Models\Thread;
         <tr>
             <td></td>
             <td class="message__info-bar">
-                <small>Posted at <?= $message->created_at->format('m/d/Y H:i:s') ?></small>
+                <?php if ($this->auth->canEditMessage($message)) : ?>
+                    <a href="/messages/update?id=<?= $message->id ?>">Edit</a>
+                <?php endif; ?>
+                <small>
+                    Posted at
+                    <time datetime="<?= $message->created_at->format('c') ?>">
+                        <?= $message->created_at->format('m/d/Y H:i:s') ?>
+                    </time>
+                </small>
             </td>
         </tr>
         <tr>
             <td class="message__author">
                 <p>
-                    <strong><?= htmlentities($message->getAuthor()->username) ?></strong>
+                    <?php if ($message->getAuthor()?->is_banned) : ?>
+                        <span style="text-decoration:line-through;">
+                            <?= htmlentities($message->getAuthor()->username) ?>
+                        </span>
+                    <?php else : ?>
+                        <strong><?= htmlentities($message->getAuthor()->username) ?></strong>
+                    <?php endif; ?>
+                </p>
+
+                <?php if ( $message->getAuthor()->avatar_path ) : ?>
+                    <p class="message__avatar">
+                        <img src="<?= $message->getAuthor()->getAvatarUrl() ?>"
+                             alt="Avatar <?= htmlentities($message->getAuthor()->username, ENT_QUOTES) ?>">
+                    </p>
+                <?php endif; ?>
+
+                <p>
+                    <small><?= mb_convert_case($message->getAuthor()->role, MB_CASE_TITLE) ?></small>
                 </p>
                 <p>
-                    <small>Registered: <?= $message->getAuthor()->created_at->format('m/d/Y') ?></small>
+                    <small>
+                        Registered:
+                        <time datetime="<?= $message->getAuthor()->created_at->format('c') ?>">
+                            <?= $message->getAuthor()->created_at->format('m/d/Y') ?>
+                        </time>
+                    </small>
                 </p>
             </td>
             <td class="message__body">
@@ -60,3 +99,5 @@ use Src\Models\Thread;
         </tr>
     </table>
 <?php endforeach; ?>
+
+<?= $pagination->buildHtml() ?>

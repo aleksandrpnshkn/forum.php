@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Src\Core;
 
 use JetBrains\PhpStorm\Pure;
+use Src\Models\Message;
 use Src\Models\Thread;
 use Src\Models\User;
 use Src\Repositories\UserRepository;
@@ -116,5 +117,37 @@ final class Auth
             )
             || $this->getUser()->isModerator()
             || $this->getUser()->isAdmin();
+    }
+
+    #[Pure] public function canReply(Thread $thread) : bool
+    {
+        if (! $this->getUser()) {
+            return false;
+        }
+
+        return ($thread->isOpen() && ! $this->getUser()->is_banned)
+            || ($thread->isClosed() && $this->canReplyInClosedThreads());
+    }
+
+    #[Pure] public function canReplyInClosedThreads() : bool
+    {
+        return $this->getUser()
+            && (
+                $this->getUser()->isAdmin()
+                || $this->getUser()->isModerator()
+            );
+    }
+
+    public function canEditMessage(Message $message) : bool
+    {
+        return $this->canReply($message->getThread())
+            && $this->getUser()
+            && (
+                $this->getUser()->id === $message->author_id // is author
+                || ( // or is privileged user
+                    $this->getUser()->isModerator()
+                    || $this->getUser()->isAdmin()
+                )
+            );
     }
 }
