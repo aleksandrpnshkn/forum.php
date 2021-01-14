@@ -94,3 +94,8 @@ hr {
     max-width: 170px;
     max-height: 170px;
 }
+
+.message__updated {
+    text-align:right;
+    color:gray;
+}

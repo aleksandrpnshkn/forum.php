@@ -96,6 +96,19 @@ use Src\Models\Thread;
             </td>
             <td class="message__body">
                 <p><?= htmlentities(nl2br($message->content)) ?></p>
+
+                <?php if ($message->isUpdated()) : ?>
+                    <p class="message__updated">
+                        <small>
+                            <i>
+                                Updated at
+                                <time datetime="<?= $message->updated_at->format('c') ?>">
+                                    <?= $message->updated_at->format('d M Y H:i:s') ?>
+                                </time>
+                            </i>
+                        </small>
+                    </p>
+                <?php endif; ?>
             </td>
         </tr>
     </table>

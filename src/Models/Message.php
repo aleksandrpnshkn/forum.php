@@ -52,6 +52,11 @@ class Message extends Model
         return $this->thread;
     }
 
+    public function isUpdated() : bool
+    {
+        return $this->created_at->getTimestamp() !== $this->updated_at->getTimestamp();
+    }
+
     public function validate() : bool
     {
         $this->validator->validateRequired('content', $this->content);
