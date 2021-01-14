@@ -106,9 +106,12 @@ final class Auth
 
     #[Pure] public function canEditThread(Thread $thread = null) : bool
     {
+        if (! $this->getUser()) {
+            return false;
+        }
+
         return ( // if author
                 $thread
-                && $this->getUser()
                 && $this->getUser()->id === $thread->author_id
             )
             || $this->getUser()->isModerator()
