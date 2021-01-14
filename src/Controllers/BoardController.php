@@ -50,7 +50,7 @@ class BoardController extends Controller
         ]);
     }
 
-    public function create(Board $rawBoard = null, $message = null)
+    public function create(Board $rawBoard = null, $appMessage = null)
     {
         if (! $this->auth->canEditBoards()) {
             $this->forbidden();
@@ -65,7 +65,7 @@ class BoardController extends Controller
             'board' => $rawBoard,
             'categories' => $this->categoryRepository->getAll(),
             'errorsBag' => $rawBoard->validator->errorsBag,
-            'message' => $message,
+            'appMessage' => $appMessage,
         ]);
     }
 
@@ -97,7 +97,7 @@ class BoardController extends Controller
         }
     }
 
-    public function edit(Board $board = null, $message = null)
+    public function edit(Board $board = null, $appMessage = null)
     {
         if (! $board) {
             $id = (int)($_GET['id'] ?? -1);
@@ -112,7 +112,7 @@ class BoardController extends Controller
             'board' => $board,
             'categories' => $this->categoryRepository->getAll(),
             'errorsBag' => $this->hasValidationErrors() ? $this->validator->errorsBag : $board->validator->errorsBag,
-            'message' => $message,
+            'appMessage' => $appMessage,
         ]);
     }
 

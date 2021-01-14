@@ -7,7 +7,7 @@ use Src\Core\Validation\ErrorsBag;
  * @var \Src\Models\Thread $thread
  * @var bool $canPinThreads
  * @var ErrorsBag $errorsBag
- * @var ?string $message
+ * @var ?string $appMessage
  * @var string $csrfField
  */
 ?>
@@ -22,9 +22,9 @@ use Src\Core\Validation\ErrorsBag;
 
 <h1>Update the thread</h1>
 
-<?php if (isset($message)) : ?>
+<?php if (isset($appMessage)) : ?>
     <hr>
-    <p><?= $message ?></p>
+    <p><?= $appMessage ?></p>
     <hr>
 <?php endif; ?>
 

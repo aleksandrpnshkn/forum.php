@@ -54,7 +54,7 @@ class CategoryController extends Controller
                 header('Location: /');
             }
             else {
-                $this->view->display('categories/create', ['message' => 'Something gone wrong']);
+                $this->view->display('categories/create', ['appMessage' => 'Something gone wrong']);
             }
         }
         else {
@@ -92,7 +92,7 @@ class CategoryController extends Controller
         }
 
         $id = (int)($_GET['id'] ?? null);
-        $message = null;
+        $appMessage = null;
 
         if (! $id) {
             header('Location: /');
@@ -104,7 +104,7 @@ class CategoryController extends Controller
         $category->name = $_POST['name'] ?? '';
 
         if ($category->validate()) {
-            $message = $this->categoryRepository->update($category)
+            $appMessage = $this->categoryRepository->update($category)
                 ? 'Category successfully updated'
                 : 'Something gone wrong';
         }
@@ -112,7 +112,7 @@ class CategoryController extends Controller
         $this->view->display('categories/update', [
             'errorsBag' => $category->validator->errorsBag,
             'category' => $category,
-            'message' => $message,
+            'appMessage' => $appMessage,
         ]);
     }
 }

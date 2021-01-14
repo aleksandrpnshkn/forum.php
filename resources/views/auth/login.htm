@@ -5,15 +5,15 @@ use Src\Core\Validation\ErrorsBag;
 
 /**
  * @var ErrorsBag $errorsBag
- * @var ?string $message
+ * @var ?string $appMessage
  * @var string $csrfField
  */
 ?>
 <h1>Login</h1>
 
-<?php if (isset($message)) : ?>
+<?php if (isset($appMessage)) : ?>
     <hr>
-    <p><?= $message ?></p>
+    <p><?= $appMessage ?></p>
     <hr>
 <?php endif; ?>
 

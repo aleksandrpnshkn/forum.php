@@ -90,7 +90,7 @@ class AuthController extends Controller
             header('Location: /');
         }
         else {
-            $this->view->display('auth/register', ['message' => 'Something gone wrong']);
+            $this->view->display('auth/register', ['appMessage' => 'Something gone wrong']);
         }
     }
 

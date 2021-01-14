@@ -33,7 +33,7 @@ class ThreadController extends Controller
         ]);
     }
 
-    public function create(Thread $rawThread = null, $message = null)
+    public function create(Thread $rawThread = null, $appMessage = null)
     {
         if (! $this->auth->canCreateThread()) {
             $this->forbidden();
@@ -53,7 +53,7 @@ class ThreadController extends Controller
             'thread' => $rawThread,
             'canPinThreads' => $this->auth->canPinThreads(),
             'errorsBag' => $this->hasValidationErrors() ? $this->validator->errorsBag : $rawThread->validator->errorsBag,
-            'message' => $message,
+            'appMessage' => $appMessage,
         ]);
     }
 
@@ -89,7 +89,7 @@ class ThreadController extends Controller
         }
     }
 
-    public function edit(Thread $thread = null, $message = null)
+    public function edit(Thread $thread = null, $appMessage = null)
     {
         if (! $thread) {
             $id = (int)($_GET['id'] ?? null);
@@ -108,7 +108,7 @@ class ThreadController extends Controller
             'thread' => $thread,
             'canPinThreads' => $this->auth->canPinThreads(),
             'errorsBag' => $this->hasValidationErrors() ? $this->validator->errorsBag : $thread->validator->errorsBag,
-            'message' => $message,
+            'appMessage' => $appMessage,
         ]);
     }
 
