@@ -38,7 +38,7 @@ class ThreadRepositoryTest extends FeatureTestCase
         $this->assertEquals(0, $this->threadRepository->count());
 
         for ($i = 0; $i < 13; $i++) {
-            $this->assertTrue($this->threadRepository->insert($this->makeThread()));
+            $this->assertTrue($this->threadRepository->insert(self::makeThread()));
         }
 
         $this->assertEquals(13, $this->threadRepository->count());
@@ -47,7 +47,7 @@ class ThreadRepositoryTest extends FeatureTestCase
     public function testGetForPage()
     {
         for ($i = 0; $i < 3; $i++) {
-            $this->assertTrue($this->threadRepository->insert($this->makeThread()));
+            $this->assertTrue($this->threadRepository->insert(self::makeThread()));
         }
         $threadsForPage1 = $this->threadRepository->getForPage(1, 2);
         $this->assertCount(2, $threadsForPage1);
@@ -55,7 +55,7 @@ class ThreadRepositoryTest extends FeatureTestCase
         $this->assertCount(1, $threadsForPage2);
     }
 
-    private function makeThread(string $name = null) : Thread
+    public static function makeThread(string $name = null) : Thread
     {
         $thread = new Thread();
         $thread->name = $name ?? uniqid();

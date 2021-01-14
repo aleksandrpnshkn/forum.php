@@ -5,17 +5,22 @@ namespace Src\Controllers;
 
 use JetBrains\PhpStorm\NoReturn;
 use Src\Core\App;
+use Src\Models\Message;
 use Src\Models\Thread;
+use Src\Repositories\MessageRepository;
+use Src\Repositories\Repository;
 use Src\Repositories\ThreadRepository;
 
 class ThreadController extends Controller
 {
     private ThreadRepository $threadRepository;
+    private MessageRepository $messageRepository;
 
     public function __construct(App $app)
     {
         parent::__construct($app);
         $this->threadRepository = new ThreadRepository();
+        $this->messageRepository = new MessageRepository();
     }
 
     public function show()
@@ -27,13 +32,17 @@ class ThreadController extends Controller
             $this->threadNotFound();
         }
 
+        $page = $_GET['page'] ?? 1;
+        $messages = $this->messageRepository->getForPageWhereThread($thread->id, $page, 10);
+
         $this->view->display('threads/show', [
             'thread' => $thread,
+            'messages' => $messages,
             'canEditThread' => $this->auth->canEditThread(),
         ]);
     }
 
-    public function create(Thread $rawThread = null, $appMessage = null)
+    public function create(Thread $rawThread = null, Message $rawMessage = null, $appMessage = null)
     {
         if (! $this->auth->canCreateThread()) {
             $this->forbidden();
@@ -49,10 +58,25 @@ class ThreadController extends Controller
             }
         }
 
+        if (! $rawMessage) {
+            $rawMessage = new Message();
+        }
+
+        if ($this->hasValidationErrors()) {
+            $errorsBag = $this->validator->errorsBag;
+        }
+        elseif ($rawThread->hasValidationErrors()) {
+            $errorsBag = $rawThread->validator->errorsBag;
+        }
+        else {
+            $errorsBag = $rawMessage->validator->errorsBag;
+        }
+
         $this->view->display('threads/create', [
             'thread' => $rawThread,
+            'message' => $rawMessage,
             'canPinThreads' => $this->auth->canPinThreads(),
-            'errorsBag' => $this->hasValidationErrors() ? $this->validator->errorsBag : $rawThread->validator->errorsBag,
+            'errorsBag' => $errorsBag,
             'appMessage' => $appMessage,
         ]);
     }
@@ -74,19 +98,42 @@ class ThreadController extends Controller
             ? filter_input(INPUT_POST, 'is_pinned') === 'on'
             : false;
 
+        // message data should also be kept if there will be validation errors
+        // , so create root message with user data before thread validation
+        $message = new Message();
+        $message->content = (string)($_POST['content'] ?? null);
+        $message->author_id = $this->auth->getUser()->id;
+
         $thread->validate();
 
         if ($thread->hasValidationErrors()) {
-            $this->create($thread);
+            $this->create($thread, $message);
+            return;
         }
-        else {
-            if ($this->threadRepository->insert($thread)) {
+
+        Repository::$db->dbh->beginTransaction();
+
+        if ($this->threadRepository->insert($thread)) {
+            $message->thread_id = $thread->id;
+            $message->validate();
+
+            if ($message->hasValidationErrors()) {
+                Repository::$db->dbh->rollBack();
+                $this->create($thread, $message);
+                return;
+            }
+
+            if (
+                $this->messageRepository->insert($message)
+                && Repository::$db->dbh->commit()
+            ) {
                 header('Location: /threads?id=' . $thread->id);
-            }
-            else {
-                $this->create($thread, 'Something gone wrong');
+                return;
             }
         }
+
+        Repository::$db->dbh->rollBack();
+        $this->create($thread, $message, 'Something gone wrong');
     }
 
     public function edit(Thread $thread = null, $appMessage = null)

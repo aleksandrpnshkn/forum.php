@@ -50,7 +50,7 @@ use Src\Models\Thread;
             <td><?= $thread->is_pinned ? '+' : '-' ?></td>
             <td><a href="/threads?id=<?= $thread->id ?>"><?= htmlentities($thread->name) ?></a></td>
             <td><?= htmlentities($thread->getAuthor()->username) ?></td>
-            <td><?= $thread->updated_at->format('m/d/Y H:m:s') ?></td>
+            <td><?= $thread->updated_at->format('m/d/Y H:i:s') ?></td>
         </tr>
     <?php endforeach; ?>
 </table>

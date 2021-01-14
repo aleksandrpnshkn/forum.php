@@ -2,10 +2,12 @@
 declare(strict_types=1);
 
 use Src\Core\Validation\ErrorsBag;
+use Src\Models\Message;
 use Src\Models\Thread;
 
 /**
  * @var Thread $thread
+ * @var Message $message
  * @var bool $canPinThreads
  * @var ErrorsBag $errorsBag
  * @var ?string $appMessage
@@ -35,6 +37,7 @@ use Src\Models\Thread;
         <label>
             Name
             <input type="text" name="name" value="<?= htmlentities($thread->name ?? '', ENT_QUOTES) ?>">
+
             <?php if ($errorsBag->has('name')) : ?>
                 <br>
                 <small><?= $errorsBag->firstMessage('name') ?></small>
@@ -44,11 +47,24 @@ use Src\Models\Thread;
     <?php if ($canPinThreads) : ?>
         <p>
             <label>
-                <input type="checkbox" name="is_pinned" value="<?= $thread->is_pinned ?>">
+                <input type="checkbox" name=is_pinned" value="<?= $thread->is_pinned ?>">
                 Pin
             </label>
         </p>
     <?php endif; ?>
+
+    <p>
+        <label>
+            Message
+            <textarea name="content"><?= htmlentities($message->content ?? '') ?></textarea>
+
+            <?php if ($errorsBag->has('content')) : ?>
+                <br>
+                <small><?= $errorsBag->firstMessage('content') ?></small>
+            <?php endif; ?>
+        </label>
+    </p>
+
     <p>
         <button type="submit">Create</button>
     </p>

@@ -62,3 +62,24 @@ hr {
     padding: 2px 10px;
     border: 1px solid gray;
 }
+
+.message {
+    width: 100%;
+    border-collapse: collapse;
+    background: antiquewhite;
+}
+
+.message th,
+.message td {
+    padding: 10px;
+    border: 1px solid gray;
+    vertical-align: top;
+}
+
+.message__info-bar {
+    text-align: right;
+}
+
+.message__author {
+    width: 150px;
+}

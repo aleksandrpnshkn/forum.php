@@ -1,8 +1,12 @@
 <?php
 declare(strict_types=1);
 
+use Src\Models\Message;
+use Src\Models\Thread;
+
 /**
- * @var \Src\Models\Thread $thread
+ * @var Thread $thread
+ * @var Message[] $messages
  * @var bool $canEditThread
  */
 ?>
@@ -29,6 +33,30 @@ declare(strict_types=1);
 
 <p>
     <small>Status: <?= $thread->status ?></small><br>
-    <small>Created: <?= $thread->created_at->format('m/d/Y H:m:s') ?></small><br>
-    <small>Last Update: <?= $thread->updated_at->format('m/d/Y H:m:s') ?></small><br>
+    <small>Created: <?= $thread->created_at->format('m/d/Y H:i:s') ?></small><br>
+    <small>Last Update: <?= $thread->updated_at->format('m/d/Y H:i:s') ?></small><br>
 </p>
+
+<?php foreach ($messages as $message) : ?>
+    <table class="message">
+        <tr>
+            <td></td>
+            <td class="message__info-bar">
+                <small>Posted at <?= $message->created_at->format('m/d/Y H:i:s') ?></small>
+            </td>
+        </tr>
+        <tr>
+            <td class="message__author">
+                <p>
+                    <strong><?= htmlentities($message->getAuthor()->username) ?></strong>
+                </p>
+                <p>
+                    <small>Registered: <?= $message->getAuthor()->created_at->format('m/d/Y') ?></small>
+                </p>
+            </td>
+            <td class="message__body">
+                <p><?= htmlentities(nl2br($message->content)) ?></p>
+            </td>
+        </tr>
+    </table>
+<?php endforeach; ?>
