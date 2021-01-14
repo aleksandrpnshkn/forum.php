@@ -42,8 +42,8 @@ use Src\Models\Thread;
 
 <p>
     <small>Status: <?= $thread->status ?></small><br>
-    <small>Created: <?= $thread->created_at->format('m/d/Y H:i:s') ?></small><br>
-    <small>Last Update: <?= $thread->updated_at->format('m/d/Y H:i:s') ?></small><br>
+    <small>Created: <?= $thread->created_at->format('d M Y H:i:s') ?></small><br>
+    <small>Last Update: <?= $thread->updated_at->format('d M Y H:i:s') ?></small><br>
 </p>
 
 <?php foreach ($messages as $message) : ?>
@@ -54,10 +54,11 @@ use Src\Models\Thread;
                 <?php if ($this->auth->canEditMessage($message)) : ?>
                     <a href="/messages/update?id=<?= $message->id ?>">Edit</a>
                 <?php endif; ?>
+
                 <small>
                     Posted at
                     <time datetime="<?= $message->created_at->format('c') ?>">
-                        <?= $message->created_at->format('m/d/Y H:i:s') ?>
+                        <?= $message->created_at->format('d M Y H:i:s') ?>
                     </time>
                 </small>
             </td>
@@ -88,7 +89,7 @@ use Src\Models\Thread;
                     <small>
                         Registered:
                         <time datetime="<?= $message->getAuthor()->created_at->format('c') ?>">
-                            <?= $message->getAuthor()->created_at->format('m/d/Y') ?>
+                            <?= $message->getAuthor()->created_at->format('d M Y') ?>
                         </time>
                     </small>
                 </p>
